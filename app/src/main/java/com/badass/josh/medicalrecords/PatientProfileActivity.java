@@ -9,18 +9,17 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.badass.josh.medicalrecords.MainActivity.maybeDatabase;
 
 public class PatientProfileActivity extends AppCompatActivity {
-
-
-    ArrayList<Long> recordIDArray;
+    List<Long> recordIDArray;
     Long patientID;
-    ArrayList<String> recordTypeArray;
-    ArrayList<String> recordDescriptionArray;
-    ArrayList<String> recordStartDateArray;
-    ArrayList<String> recordEndDateArray;
+    List<String> recordTypeArray;
+    List<String> recordDescriptionArray;
+    List<String> recordStartDateArray;
+    List<String> recordEndDateArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

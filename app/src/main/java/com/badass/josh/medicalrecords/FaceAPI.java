@@ -18,6 +18,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Console;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import org.apache.http.client.methods.HttpPut;
@@ -32,6 +34,9 @@ import com.microsoft.projectoxford.face.*;
 import com.microsoft.projectoxford.face.contract.*;
 
 import java.net.URI;
+import java.util.stream.*;
+
+import static java.lang.System.in;
 
 /**
  * Created by Josh on 10/7/2017.
@@ -86,52 +91,33 @@ public class FaceAPI {
         }
     }
 
-    private void detectAndFrame(final Bitmap imageBitmap)
-    {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-        ByteArrayInputStream inputStream =
-                new ByteArrayInputStream(outputStream.toByteArray());
-        AsyncTask<InputStream, String, Face[]> detectTask =
-                new AsyncTask<InputStream, String, Face[]>() {
-                    @Override
-                    protected Face[] doInBackground(InputStream... params) {
-                        try {
-                            Log.d(TAG, "Detecting...");
-                            Face[] result = faceServiceClient.detect(
-                                    params[0],
-                                    true,         // returnFaceId
-                                    false,        // returnFaceLandmarks
-                                    null           // returnFaceAttributes: a string like "age, gender"
-                            );
-                            if (result == null)
-                            {
-                                Log.d(TAG, "Detection Finished. Nothing detected");
-                                return null;
-                            }
-                            Log.d(TAG,
-                                    String.format("Detection Finished. %d face(s) detected",
-                                            result.length));
-                            return result;
-                        } catch (Exception e) {
-                            Log.d(TAG, "Detection failed");
-                            return null;
-                        }
-                    }
-                    @Override
-                    protected void onPreExecute() {
-                        //TODO: show progress dialog
-                    }
-                    @Override
-                    protected void onProgressUpdate(String... progress) {
-                        //TODO: update progress
-                    }
-                    @Override
-                    protected void onPostExecute(Face[] result) {
-                        //TODO: update face frames
-                    }
-                };
-        detectTask.execute(inputStream);
+    public void indentifyPatient(String picLocation){
+        /*try
+        {
+            InputStream fis = new InputStream(picLocation);
+            faceServiceClient.identity(fis);
+            var faces = await faceServiceClient.DetectAsync(s);
+            var faceIds = faces.Select(face => face.FaceId).ToArray();
+
+            var results = await faceServiceClient.IdentifyAsync(personGroupId, faceIds);
+            foreach (var identifyResult in results)
+            {
+                Console.WriteLine("Result of face: {0}", identifyResult.FaceId);
+                if (identifyResult.Candidates.Length == 0)
+                {
+                    Console.WriteLine("No one identified");
+                }
+                else
+                {
+                    // Get top 1 among all candidates returned
+                    var candidateId = identifyResult.Candidates[0].PersonId;
+                    var person = await faceServiceClient.GetPersonAsync(personGroupId, candidateId);
+                    Console.WriteLine("Identified as {0}", person.Name);
+                }
+            }
+        } catch (Exception ex) {
+
+        }*/
     }
 
 
@@ -156,7 +142,7 @@ public class FaceAPI {
             request.setHeader("Ocp-Apim-Subscription-Key", SUBSCRIPTION_KEY);
 
             // Request body.
-            StringEntity reqEntity = new StringEntity("{\"url\":\"https://upload.wikimedia.org/wikipedia/commons/c/c3/RH_Louise_Lillian_Gish.jpg\"}");
+            StringEntity reqEntity = new StringEntity("{\"url\": \"picLocation\"}");
             request.setEntity(reqEntity);
 
             // Execute the REST API call and get the response entity.

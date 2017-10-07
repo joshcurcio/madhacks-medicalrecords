@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by timwildauer on 10/7/17.
@@ -16,13 +17,13 @@ import java.util.ArrayList;
 public class PatientRecordAdapter extends ArrayAdapter<String>
 {
 
-    ArrayList<String> recordTypeArray;
-    ArrayList<String> recordDescriptionArray;
-    ArrayList<String> recordStartDateArray;
-    ArrayList<String> recordEndDateArray;
+    List<String> recordTypeArray;
+    List<String> recordDescriptionArray;
+    List<String> recordStartDateArray;
+    List<String> recordEndDateArray;
 
-    public PatientRecordAdapter(Context context, ArrayList<String> recordTypeArray, ArrayList<String> recordDescriptionArray,
-                                ArrayList<String> recordStartDateArray, ArrayList<String> recordEndDateArray)
+    public PatientRecordAdapter(Context context, List<String> recordTypeArray, List<String> recordDescriptionArray,
+                                List<String> recordStartDateArray, List<String> recordEndDateArray)
     {
         super(context, R.layout.patient_record_layout, recordTypeArray);
         this.recordTypeArray = recordTypeArray;
