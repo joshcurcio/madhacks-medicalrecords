@@ -43,6 +43,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+        <?xml version="1.0" encoding="utf-8"?>
+        
     </application>
 
 </manifest>
