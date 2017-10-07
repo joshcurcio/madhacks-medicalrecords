@@ -1,5 +1,9 @@
 package com.badass.josh.medicalrecords;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,8 +14,22 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Console;
+import java.io.InputStream;
 import java.net.URI;
 import org.apache.http.client.methods.HttpPut;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import com.microsoft.projectoxford.face.*;
+import com.microsoft.projectoxford.face.contract.*;
 
 import java.net.URI;
 
@@ -21,30 +39,31 @@ import java.net.URI;
 
 public class FaceAPI {
     private static final String SUBSCRIPTION_KEY = "13hc77781f7e4b19b5fcdd72a8df7156";
-    private static final String URI_BASE = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect";
+    private static final String DETECT_BASE = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect";
+    private static final String PERSON_GROUP_BASE = "https://eastus.api.cognitive.microsoft.com/face/v1.0/personGroups/";
+
+    private static String TAG = "FACE API: ";
 
 
-    public void createPersonGroup(Person p){
+    private FaceServiceClient faceServiceClient =
+            new FaceServiceRestClient(SUBSCRIPTION_KEY);
+
+
+    public void createPersonGroup(String personGroup){
         HttpClient httpClient = new DefaultHttpClient();
 
         try
         {
-            // The valid characters for the ID below include numbers, English letters in lower case, '-', and '_'.
-            // The maximum length of the personGroupId is 64.
-            String personGroupId = "example-group-00";
 
-            // NOTE: You must use the same region in your REST call as you used to obtain your subscription keys.
-            //   For example, if you obtained your subscription keys from westus, replace "westcentralus" in the
-            //   URL below with "westus".
-            URIBuilder builder = new URIBuilder("https://westcentralus.api.cognitive.microsoft.com/face/v1.0/persongroups/" +
-                    personGroupId);
+            URIBuilder builder = new URIBuilder(PERSON_GROUP_BASE +
+                    personGroup);
 
             URI uri = builder.build();
             HttpPut request = new HttpPut(uri);
 
             // Request headers. Replace the example key with your valid subscription key.
             request.setHeader("Content-Type", "application/json");
-            request.setHeader("Ocp-Apim-Subscription-Key", "13hc77781f7e4b19b5fcdd72a8df7156");
+            request.setHeader("Ocp-Apim-Subscription-Key", SUBSCRIPTION_KEY);
 
             // Request body. The name field is the display name you want for the group (must be under 128 characters).
             // The size limit for what you want to include in the userData field is 16KB.
@@ -67,12 +86,61 @@ public class FaceAPI {
         }
     }
 
-    public void retrieveUserIdFromPicture(){
+    private void detectAndFrame(final Bitmap imageBitmap)
+    {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        ByteArrayInputStream inputStream =
+                new ByteArrayInputStream(outputStream.toByteArray());
+        AsyncTask<InputStream, String, Face[]> detectTask =
+                new AsyncTask<InputStream, String, Face[]>() {
+                    @Override
+                    protected Face[] doInBackground(InputStream... params) {
+                        try {
+                            Log.d(TAG, "Detecting...");
+                            Face[] result = faceServiceClient.detect(
+                                    params[0],
+                                    true,         // returnFaceId
+                                    false,        // returnFaceLandmarks
+                                    null           // returnFaceAttributes: a string like "age, gender"
+                            );
+                            if (result == null)
+                            {
+                                Log.d(TAG, "Detection Finished. Nothing detected");
+                                return null;
+                            }
+                            Log.d(TAG,
+                                    String.format("Detection Finished. %d face(s) detected",
+                                            result.length));
+                            return result;
+                        } catch (Exception e) {
+                            Log.d(TAG, "Detection failed");
+                            return null;
+                        }
+                    }
+                    @Override
+                    protected void onPreExecute() {
+                        //TODO: show progress dialog
+                    }
+                    @Override
+                    protected void onProgressUpdate(String... progress) {
+                        //TODO: update progress
+                    }
+                    @Override
+                    protected void onPostExecute(Face[] result) {
+                        //TODO: update face frames
+                    }
+                };
+        detectTask.execute(inputStream);
+    }
+
+
+    public void retrieveUserIdFromPicture(String picLocation){
         HttpClient httpclient = new DefaultHttpClient();
 
         try
         {
-            URIBuilder builder = new URIBuilder(URI_BASE);
+            URIBuilder builder = new URIBuilder(DETECT_BASE);
 
             // Request parameters. All of them are optional.
             builder.setParameter("returnFaceId", "true");
