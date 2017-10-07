@@ -42,11 +42,11 @@ public class DatabaseInfo
     public static final String DATABASE_TABLE_RECORDS_TYPE_NAME = "recordType";
     public static final int DATABASE_TABLE_RECORDS_TYPE_NUM = 2;
     public static final String DATABASE_TABLE_RECORDS_DESCRIPTION_NAME = "description";
-    public static final int DATABASE_TABLE_RECORDS_DISTANCE_NUM = 3;
+    public static final int DATABASE_TABLE_RECORDS_DESCRIPTION_NUM = 3;
     public static final String DATABASE_TABLE_RECORDS_DATE_START_NAME = "dateStart";
-    public static final int DATABASE_TABLE_RECORDS_YEAR_NUM = 4;
+    public static final int DATABASE_TABLE_RECORDS_START_DATE_NUM = 4;
     public static final String DATABASE_TABLE_RECORDS_DATE_END_NAME = "dateEnd";
-    public static final int DATABASE_TABLE_RECORDS_MONTH_NUM = 5;
+    public static final int DATABASE_TABLE_RECORDS_END_DATE_NUM = 5;
     public static final String[] DATABASE_RECORDS_NAMES = new String[] {DATABASE_TABLE_RECORDS_ID_NAME, DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, DATABASE_TABLE_RECORDS_TYPE_NAME, DATABASE_TABLE_RECORDS_DESCRIPTION_NAME, DATABASE_TABLE_RECORDS_DATE_START_NAME, DATABASE_TABLE_RECORDS_DATE_END_NAME};
 
     public static final String DATABASE_CREATE_RECORDS_TABLE =
@@ -78,17 +78,16 @@ public class DatabaseInfo
         return actualDatabase.insert(DATABASE_TABLE_PATIENTS, null, newPatientValues);
     }
 
-    public long addNewRecord(int id, String type, String description, String startDate, String endDate)
+    public long addNewRecord(int patientID, String type, String description, String startDate, String endDate)
     {
         ContentValues newPatientValues = new ContentValues();
-        newPatientValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, id);
+        newPatientValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, patientID);
         newPatientValues.put(DATABASE_TABLE_RECORDS_TYPE_NAME, type);
         newPatientValues.put(DATABASE_TABLE_RECORDS_DESCRIPTION_NAME, description);
         newPatientValues.put(DATABASE_TABLE_RECORDS_DATE_START_NAME, startDate);
         newPatientValues.put(DATABASE_TABLE_RECORDS_DATE_END_NAME, endDate);
 
         return actualDatabase.insert(DATABASE_TABLE_RECORDS, null, newPatientValues);
-
     }
 
     public Cursor returnAllPatients()
@@ -97,11 +96,24 @@ public class DatabaseInfo
         return c;
     }
 
-    public Cursor returnAllRecords(Long car_id)
+    public Cursor returnAllRecords(Long patient_id)
     {
         Log.d("found", "" );
-        Cursor c = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{"" + car_id});
+        Cursor c = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{"" + patient_id});
         return c;
+    }
+
+    public void updateRecord(Long recordID, Long patientID, String newType, String newDescription, int newStartDate, int newEndDate)
+    {
+        ContentValues newContentValues = new ContentValues();
+        newContentValues.put(DATABASE_TABLE_RECORDS_ID_NAME, recordID);
+        newContentValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, patientID);
+        newContentValues.put(DATABASE_TABLE_RECORDS_TYPE_NAME, newType);
+        newContentValues.put(DATABASE_TABLE_RECORDS_DESCRIPTION_NAME, newDescription);
+        newContentValues.put(DATABASE_TABLE_RECORDS_DATE_START_NAME, newStartDate);
+        newContentValues.put(DATABASE_TABLE_RECORDS_DATE_END_NAME, newEndDate);
+
+        actualDatabase.update(DATABASE_TABLE_PATIENTS, newContentValues, DATABASE_TABLE_RECORDS_ID_NAME + "=" + recordID, null);
     }
 
 
