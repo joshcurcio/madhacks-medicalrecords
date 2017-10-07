@@ -4,11 +4,10 @@ package com.badass.josh.medicalrecords;
  * Created by Josh on 10/7/2017.
  */
 
-    import android.content.ContentValues;
-    import android.content.Context;
-    import android.database.sqlite.SQLiteDatabase;
-    import android.database.sqlite.SQLiteOpenHelper;
-    import android.util.Log;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper
@@ -36,12 +35,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DatabaseInfo.DATABASE_CREATE_CARS_TABLE);
+        db.execSQL(DatabaseInfo.DATABASE_CREATE_PATIENTS_TABLE);
         db.execSQL(DatabaseInfo.DATABASE_CREATE_RECORDS_TABLE);
-        db.execSQL(DatabaseInfo.DATABASE_CREATE_GAS_TABLE);
-        db.execSQL(DatabaseInfo.DATABASE_CREATE_MAINTENANCE_TABLE);
-        db.execSQL(DatabaseInfo.DATABASE_CREATE_GAS_VIEW);
-        db.execSQL(DatabaseInfo.DATABASE_CREATE_MAINTENANCE_VIEW);
         Log.d("db", "created tables");
     }
 
@@ -53,16 +48,4 @@ public class DatabaseHelper extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    public void addRow(DatabaseHelper dh)
-    {
-        SQLiteDatabase db = dh.getWritableDatabase();
-
-        Log.d("this", "started adding the row");
-        ContentValues initialValues = new ContentValues();
-        initialValues.put(DatabaseInfo.DATABASE_TABLE_CARS_MAKE_NAME, "Geo");
-        initialValues.put(DatabaseInfo.DATABASE_TABLE_CARS_MODEL_NAME, "Prizm");
-        initialValues.put(DatabaseInfo.DATABASE_TABLE_CARS_YEAR_NAME, "1995");
-        long k = db.insert(DatabaseInfo.DATABASE_TABLE_CARS, null, initialValues);
-        Log.d("this", "finished adding the row");
-    }
 }
