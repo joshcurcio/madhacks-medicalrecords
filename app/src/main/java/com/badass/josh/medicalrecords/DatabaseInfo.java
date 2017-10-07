@@ -20,7 +20,7 @@ public class DatabaseInfo
     public static final int DATABASE_TABLE_PATIENTS_ID_NUM = 0;
     public static final String DATABASE_TABLE_PATIENTS_NAME_NAME = "name";
     public static final int DATABASE_TABLE_PATIENTS_NAME_NUM = 1;
-    public static final String DATABASE_TABLE_PATIENTS_DOB_NAME = "DOB";
+    public static final String DATABASE_TABLE_PATIENTS_DOB_NAME = "dob";
     public static final int DATABASE_TABLE_PATIENTS_DOB_NUM = 2;
     public static final String DATABASE_TABLE_PATIENTS_LOCATION_NAME = "location";
     public static final int DATABASE_TABLE_PATIENTS_LOCATION_NUM = 3;
