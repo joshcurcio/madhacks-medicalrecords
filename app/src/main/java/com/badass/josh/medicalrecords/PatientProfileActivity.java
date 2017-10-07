@@ -8,12 +8,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.badass.josh.medicalrecords.MainActivity.maybeDatabase;
 
 public class PatientProfileActivity extends AppCompatActivity {
+
+    String patientName;
+
     List<Long> recordIDArray;
     Long patientID;
     List<String> recordTypeArray;
@@ -30,6 +32,7 @@ public class PatientProfileActivity extends AppCompatActivity {
         Intent hello = getIntent();
 
         patientID = hello.getLongExtra("patient_id", 0);
+        patientName = hello.getStringExtra("patient_name");
         getPatientRecords(patientID);
 
 
@@ -53,6 +56,7 @@ public class PatientProfileActivity extends AppCompatActivity {
 
         moveToRecordInfo.putExtra("record_id", recordIDArray.get(i));
         moveToRecordInfo.putExtra("patient_id", patientID);
+        moveToRecordInfo.putExtra("patient_name", patientName);
         moveToRecordInfo.putExtra("type", recordTypeArray.get(i));
         moveToRecordInfo.putExtra("description", recordDescriptionArray.get(i));
         moveToRecordInfo.putExtra("start_date", recordStartDateArray.get(i));

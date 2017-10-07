@@ -103,7 +103,7 @@ public class DatabaseInfo
         return c;
     }
 
-    public void updateRecord(Long recordID, Long patientID, String newType, String newDescription, int newStartDate, int newEndDate)
+    public void updateRecord(Long recordID, Long patientID, String newType, String newDescription, String newStartDate, String newEndDate)
     {
         ContentValues newContentValues = new ContentValues();
         newContentValues.put(DATABASE_TABLE_RECORDS_ID_NAME, recordID);
