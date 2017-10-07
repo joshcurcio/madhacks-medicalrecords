@@ -10,4 +10,14 @@ public class RecordDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_details);
     }
+
+
+
+
+
+
+
+
+
+
 }

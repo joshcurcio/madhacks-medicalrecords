@@ -2,6 +2,10 @@ package com.badass.josh.medicalrecords;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.content.Intent;
+import android.view.View;
+import android.provider.MediaStore;
+import android.graphics.Bitmap;
 
 public class WelcomeScreenActivity extends AppCompatActivity {
 
@@ -20,6 +24,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    // Bring up the camera
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -27,6 +32,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         }
     }
 
+    // What do we do when we get the picture back?
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
@@ -37,6 +43,3 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
 }
 
-
-
-}

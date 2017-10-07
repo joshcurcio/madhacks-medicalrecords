@@ -25,7 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".PatientProfileActivity" />
-        <activity android:name=".WelcomeScreenActivity"></activity>
+        <activity android:name=".WelcomeScreenActivity" />
+        <activity android:name=".RecordDetailsActivity"></activity>
     </application>
 
 </manifest>
