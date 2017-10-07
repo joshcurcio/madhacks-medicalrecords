@@ -6,4 +6,186 @@
     android:layout_height="match_parent"
     tools:context="com.badass.josh.medicalrecords.RecordDetailsActivity">
 
+    <LinearLayout
+        android:id="@+id/topLevelVertical"
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        android:orientation="vertical"
+        android:weightSum="1"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <LinearLayout
+            android:id="@+id/infoHorizontalLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp">
+
+            <LinearLayout
+                android:id="@+id/leftVerticalLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="vertical"
+                android:weightSum="1"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="8dp">
+
+                <TextView
+                    android:id="@+id/PATIENTNAME"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:text="PATIENT NAME:"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
+                <TextView
+                    android:id="@+id/EVENTTYPE"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".25"
+                    android:text="EVENT TYPE:"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="65dp" />
+
+                <TextView
+                    android:id="@+id/STARTDATE"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:text="START DATE:"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="33dp"
+                    tools:layout_editor_absoluteY="118dp" />
+
+                <TextView
+                    android:id="@+id/ENDDATE"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:text="END DATE:"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="32dp"
+                    tools:layout_editor_absoluteY="172dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rightVerticalLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="vertical"
+                android:weightSum="1"
+                tools:layout_editor_absoluteX="171dp"
+                tools:layout_editor_absoluteY="8dp">
+
+                <EditText
+                    android:id="@+id/patientNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:editable="false"
+                    android:ems="10"
+                    android:enabled="true"
+                    android:inputType="textPersonName"
+                    android:text="John Smith"
+                    tools:focusable="false"
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="5dp" />
+
+                <EditText
+                    android:id="@+id/eventTypeEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="Injury"
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="55dp" />
+
+                <EditText
+                    android:id="@+id/startDateEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="01/01/2017"
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="108dp" />
+
+                <EditText
+                    android:id="@+id/endDateEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="01/01/2017"
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="164dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2" />
+
+        <LinearLayout
+            android:id="@+id/descriptionVerticalLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:orientation="vertical"
+            android:weightSum="1"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="256dp">
+
+            <TextView
+                android:id="@+id/DESCRIPTION"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:text="DESCRIPTION:"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:layout_editor_absoluteX="125dp"
+                tools:layout_editor_absoluteY="252dp" />
+
+            <EditText
+                android:id="@+id/descriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:ems="10"
+                android:inputType="textMultiLine"
+                android:text="This is the description. AKFJSKJFKASDJ LFKAJSDLKF JALKJFLKJASLKFJKLSD FKL ASFJSDKL FKASDJ FKLA SDJLFJ ASKL FJKLSD JFLASDJAFKL SDKAFSDKLAFJ SLDKJFLKASJ FLK SDJLKF"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="274dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/saveChangesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:text="Save Changes"
+            android:textSize="24sp" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

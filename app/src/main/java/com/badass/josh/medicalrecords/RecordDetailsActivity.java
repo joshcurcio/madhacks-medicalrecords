@@ -3,9 +3,10 @@ package com.badass.josh.medicalrecords;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class RecordDetailsActivity extends AppCompatActivity {
-
 
     Long recordID;
     Long patientID;
@@ -14,8 +15,17 @@ public class RecordDetailsActivity extends AppCompatActivity {
     String startDate;
     String endDate;
 
+    // UI elements
+    Button saveChangesButton;
+    EditText patientNameEditText;
+    EditText eventTypeEditText;
+    EditText startDateEditText;
+    EditText endDateEditText;
+    EditText descriptionEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         Intent recordInfo = getIntent();
 
@@ -26,7 +36,17 @@ public class RecordDetailsActivity extends AppCompatActivity {
         startDate = recordInfo.getStringExtra("start_date");
         endDate = recordInfo.getStringExtra("end_date");
 
-        super.onCreate(savedInstanceState);
+        // Setting up access to UI elements
+        this.saveChangesButton = (Button) this.findViewById(R.id.saveChangesButton);
+        this.patientNameEditText = (EditText) this.findViewById(R.id.patientNameEditText);
+        this.eventTypeEditText = (EditText) this.findViewById(R.id.eventTypeEditText);
+        this.startDateEditText = (EditText) this.findViewById(R.id.startDateEditText);
+        this.endDateEditText = (EditText) this.findViewById(R.id.endDateEditText);
+        this.descriptionEditText = (EditText) this.findViewById(R.id.descriptionEditText);
+
+
+
+
         setContentView(R.layout.activity_record_details);
     }
 
