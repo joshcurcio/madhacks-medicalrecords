@@ -72,7 +72,6 @@ public class RecordDetailsActivity extends AppCompatActivity {
         });
 
 
-
         setContentView(R.layout.activity_record_details);
     }
 
