@@ -62,7 +62,7 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
         if (!patientNameString.isEmpty() && !patientDOBString.isEmpty() && !patientLocationString.isEmpty())
         {
             int location = Integer.parseInt(patientLocationString);
-            patientID = MainActivity.maybeDatabase.addNewPatient(patientNameString, patientDOBString, location);
+            patientID = WelcomeScreenActivity.maybeDatabase.addNewPatient(patientNameString, patientDOBString, location);
         }
 
         goToNewPatientInfo();

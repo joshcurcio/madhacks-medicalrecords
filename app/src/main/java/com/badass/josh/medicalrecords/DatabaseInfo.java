@@ -4,8 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
-import static com.badass.josh.medicalrecords.MainActivity.actualDatabase;
-import static com.badass.josh.medicalrecords.MainActivity.bigDatabase;
+import static com.badass.josh.medicalrecords.WelcomeScreenActivity.actualDatabase;
+import static com.badass.josh.medicalrecords.WelcomeScreenActivity.bigDatabase;
 
 
 /**

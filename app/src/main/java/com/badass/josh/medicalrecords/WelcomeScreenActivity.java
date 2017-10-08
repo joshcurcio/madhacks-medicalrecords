@@ -1,6 +1,7 @@
 package com.badass.josh.medicalrecords;
 
 import android.app.ProgressDialog;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -39,6 +40,12 @@ import com.microsoft.projectoxford.face.contract.Occlusion;
 
 public class WelcomeScreenActivity extends AppCompatActivity {
 
+
+    public static DatabaseHelper bigDatabase;
+    public static SQLiteDatabase actualDatabase;
+    public static DatabaseInfo maybeDatabase;
+
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     // Flag to indicate which task is to be performed.
@@ -57,6 +64,11 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bigDatabase = DatabaseHelper.getInstance(this);
+
+        openDB();
+
         setContentView(R.layout.activity_welcome_screen);
     }
 
@@ -98,6 +110,9 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
+                mImageUri = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 System.out.println("MADE IT");
@@ -105,9 +120,9 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void galleryAddPic() {
+    private void galleryAddPic(File f) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mImageUri = Uri.fromFile(photoFile);
+        mImageUri = Uri.fromFile(f);
         mediaScanIntent.setData(mImageUri);
         this.sendBroadcast(mediaScanIntent);
 
@@ -116,14 +131,8 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         if (requestCode == REQUEST_TAKE_PHOTO)
         {
-            galleryAddPic();
-            //mImageUri = intent.getData();
-            System.out.println("before : " + mImageUri);
+            galleryAddPic(photoFile);
 
-            System.out.println("got the result");
-            mImageUri = FileProvider.getUriForFile(this,
-                    "com.example.android.fileprovider",
-                    photoFile);
             System.out.println("after : " + mImageUri);
 
             mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
@@ -139,7 +148,8 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             }
 
 
-            Intent goToAddPatient = new Intent();
+            Intent goToAddPatient = new Intent(this, NewPatientActivity.class);
+            startActivity(goToAddPatient);
 
         }
     }
@@ -190,14 +200,14 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            mProgressDialog.show();
+            //mProgressDialog.show();
             Log.e("ERROR ", "Request: Detecting in image " + mImageUri);
         }
 
         @Override
         protected void onProgressUpdate(String... progress) {
-            mProgressDialog.setMessage(progress[0]);
-            Log.d("SUCCESS", "onProgressUpdate: " , new Exception());
+            //mProgressDialog.setMessage(progress[0]);
+            System.out.println(progress);
         }
 
         @Override
@@ -208,8 +218,27 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             }
 
             // Show the result on screen when detection is done.
-            System.out.println("SUCCESS " + result.toString());
+            System.out.println("SUCCESS " + result);
         }
     }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        closeDB();
+    }
+
+    private void openDB()
+    {
+        maybeDatabase = new DatabaseInfo();
+        maybeDatabase.open();
+    }
+
+    private void closeDB()
+    {
+        maybeDatabase.close();
+    }
+
 
 }
