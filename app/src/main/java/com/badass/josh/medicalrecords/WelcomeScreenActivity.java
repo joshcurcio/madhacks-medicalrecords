@@ -184,7 +184,7 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
 
     @Override
     public void onGetPersonCompleted(String personName) {
-        //mText.append("\nFound " + personName);
+        System.out.println(personName);
     }
 
     public class CSFaceGetPersonTask extends AsyncTask<String, Void, String> {
