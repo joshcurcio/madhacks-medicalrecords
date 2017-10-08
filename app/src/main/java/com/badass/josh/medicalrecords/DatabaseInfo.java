@@ -102,6 +102,23 @@ public class DatabaseInfo
         return killMeNow;
     }
 
+    public boolean getPatientInfo(int patientID)
+    {
+        Cursor patientInfoCursor = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_PATIENTS + " WHERE " + DATABASE_TABLE_PATIENTS_ID_NAME + " = " + patientID, null);
+        if (patientInfoCursor.moveToFirst())
+        {
+            Singleton.patientName = patientInfoCursor.getString(DATABASE_TABLE_PATIENTS_NAME_NUM);
+            Singleton.patientDOB = patientInfoCursor.getString(DatabaseInfo.DATABASE_TABLE_PATIENTS_DOB_NUM);
+            Singleton.patientLocation = patientInfoCursor.getString(DatabaseInfo.DATABASE_TABLE_PATIENTS_LOCATION_NUM);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
     public void updateRecord(Long recordID, Long patientID, String newType, String newDescription, String newStartDate, String newEndDate)
     {
         ContentValues newContentValues = new ContentValues();
