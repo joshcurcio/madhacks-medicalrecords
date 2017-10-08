@@ -30,23 +30,14 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-package com.badass.josh.medicalrecords.helper;
+package com.badass.josh.medicalrecords.contract;
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.widget.GridView;
+public class FaceRectangle {
+    public int width;
 
-public class EmbeddedGridView extends GridView {
-    public EmbeddedGridView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+    public int height;
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int newHeightMeasureSpec =
-                MeasureSpec.makeMeasureSpec(MEASURED_SIZE_MASK, MeasureSpec.AT_MOST);
+    public int left;
 
-        super.onMeasure(widthMeasureSpec, newHeightMeasureSpec);
-        getLayoutParams().height = getMeasuredHeight();
-    }
+    public int top;
 }

@@ -1,11 +1,11 @@
 package com.badass.josh.medicalrecords;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,60 +21,58 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import com.badass.josh.medicalrecords.helper.ImageHelper;
-import com.badass.josh.medicalrecords.helper.SampleApp;
-import com.microsoft.projectoxford.face.FaceServiceClient;
-import com.microsoft.projectoxford.face.contract.Emotion;
 import com.microsoft.projectoxford.face.contract.Face;
-import com.microsoft.projectoxford.face.contract.FacialHair;
-import com.microsoft.projectoxford.face.contract.HeadPose;
-import com.microsoft.projectoxford.face.contract.Accessory;
-import com.microsoft.projectoxford.face.contract.Blur;
-import com.microsoft.projectoxford.face.contract.Exposure;
-import com.microsoft.projectoxford.face.contract.Hair;
 import com.microsoft.projectoxford.face.contract.IdentifyResult;
-import com.microsoft.projectoxford.face.contract.Makeup;
-import com.microsoft.projectoxford.face.contract.Noise;
-import com.microsoft.projectoxford.face.contract.Occlusion;
 
-public class WelcomeScreenActivity extends AppCompatActivity {
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted{
 
 
     public static DatabaseHelper bigDatabase;
     public static SQLiteDatabase actualDatabase;
     public static DatabaseInfo maybeDatabase;
 
+    private String cognitiveServicesBaseUrl = "https://eastus.api.cognitive.microsoft.com/face/v1.0";
+    private String cognitiveServicesAPIKey = "d2ea96917bc34094ba1bff98fcb1b1aa";
+    private String cognitiveServicesPersonGroup = "madhacks";
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_TAKE_PHOTO = 1;
+    static File photoFile = null;
 
-    // Flag to indicate which task is to be performed.
-    private static final int REQUEST_SELECT_IMAGE = 0;
-
-    // The URI of the image selected to detect.
     private Uri mImageUri;
 
-    // The image selected to detect.
     private Bitmap mBitmap;
 
-    // Progress dialog popped up when communicating with server.
     ProgressDialog mProgressDialog;
     String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_welcome_screen);
 
         bigDatabase = DatabaseHelper.getInstance(this);
 
         openDB();
-
-        setContentView(R.layout.activity_welcome_screen);
     }
 
 
@@ -99,8 +97,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         return image;
     }
 
-    static final int REQUEST_TAKE_PHOTO = 1;
-    static File photoFile = null;
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -120,7 +117,6 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                System.out.println("MADE IT");
             }
         }
     }
@@ -130,118 +126,203 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         mImageUri = Uri.fromFile(f);
         mediaScanIntent.setData(mImageUri);
         this.sendBroadcast(mediaScanIntent);
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
         if (requestCode == REQUEST_TAKE_PHOTO)
         {
             galleryAddPic(photoFile);
-
-            System.out.println("after : " + mImageUri);
-
             mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
                     mImageUri, getContentResolver());
-            System.out.println("BITMAP NOT NULL");
             if(mBitmap != null) {
+                /*ByteArrayOutputStream output = new ByteArrayOutputStream();
+                mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());*/
+                //OnCSTaskCompleted listener = new OnCSTaskCompleted();
+                try {
+                    CSFaceDetectTask detectTask = new CSFaceDetectTask(this);
+                    detectTask.execute();
+                } catch (Exception e) {
+                    Log.e("ERROR ", "doInBackground: ", e);
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onDetectCompleted(String result) {
+        if (result == "failed") {
+            //mText.setText("No Face Detected");
+            return;
+        }
+        //mText.append("\nFace Detected...\nIdentifying...");
+        try
+        {
+            JSONArray faceArray = new JSONArray(result);
+            JSONObject faceData = faceArray.getJSONObject(0);
+            String faceId = faceData.getString("faceId");
+            CSFaceIdentifyTask identifyTask = new CSFaceIdentifyTask(this);
+            identifyTask.execute(faceId);
+        }
+        catch(JSONException e)
+        {
+            //mText.append("\n" + e.toString());
+        }
+    }
+
+    @Override
+    public void onIndentifyCompleted(String personId) {
+        //mText.append("\npersonId: " + personId);
+        if (personId == ""){
+            //mText.append("\nUnidentified Person");
+            return;
+        }
+        CSFaceGetPersonTask getPersonTask = new CSFaceGetPersonTask(this);
+        getPersonTask.execute(personId);
+    }
+
+    @Override
+    public void onGetPersonCompleted(String personName) {
+        //mText.append("\nFound " + personName);
+    }
+
+    public class CSFaceGetPersonTask extends AsyncTask<String, Void, String> {
+        private OnCSTaskCompleted listener;
+
+        public CSFaceGetPersonTask(OnCSTaskCompleted listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String result = "";
+            String personId = strings[0];
+            HttpClient httpclient = new DefaultHttpClient();
+            try {
+                URIBuilder builder = new URIBuilder(cognitiveServicesBaseUrl + "/persongroups/" + cognitiveServicesPersonGroup + "/persons/" + personId);
+                URI uri = builder.build();
+                HttpGet request = new HttpGet(uri);
+                request.setHeader("Ocp-Apim-Subscription-Key", cognitiveServicesAPIKey);
+                HttpResponse response = httpclient.execute(request);
+                HttpEntity entity = response.getEntity();
+
+                if (entity != null) {
+                    result = EntityUtils.toString(entity);
+                }
+
+                JSONObject personData = new JSONObject(result);
+                String personName = personData.getString("name");
+
+                return personName;
+            } catch (Exception e) {
+                return e.toString();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            listener.onGetPersonCompleted(result.toString());
+        }
+    }
+
+    public class CSFaceIdentifyTask extends AsyncTask<String, Void, String> {
+        private OnCSTaskCompleted listener;
+
+        public CSFaceIdentifyTask(OnCSTaskCompleted listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String result = "";
+            HttpClient httpclient = new DefaultHttpClient();
+            try {
+                URIBuilder builder = new URIBuilder(cognitiveServicesBaseUrl + "/identify");
+                URI uri = builder.build();
+                HttpPost request = new HttpPost(uri);
+
+                request.setHeader("Content-Type", "application/json");
+                request.setHeader("Ocp-Apim-Subscription-Key", cognitiveServicesAPIKey);
+
+                JSONObject jsonRequest = new JSONObject();
+                jsonRequest.put("personGroupId", cognitiveServicesPersonGroup);
+                JSONArray faceIds = new JSONArray();
+                faceIds.put(strings[0]);
+                jsonRequest.put("faceIds", faceIds);
+                request.setEntity(new StringEntity(jsonRequest.toString()));
+
+                HttpResponse response = httpclient.execute(request);
+                HttpEntity entity = response.getEntity();
+
+                if (entity != null) {
+                    result = EntityUtils.toString(entity);
+                }
+
+                JSONArray personData = new JSONArray(result);
+                JSONObject faceMatch = personData.getJSONObject(0);
+                JSONArray candidates = faceMatch.getJSONArray("candidates");
+                JSONObject candidate = candidates.getJSONObject(0);
+
+                String personId = candidate.getString("personId");
+                return personId;
+            } catch (Exception e) {
+                return "";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            listener.onIndentifyCompleted(result.toString());
+        }
+    }
+
+    public class CSFaceDetectTask extends AsyncTask<String, Void, String> {
+        private OnCSTaskCompleted listener;
+        private String result = "";
+
+        public CSFaceDetectTask(OnCSTaskCompleted listener){
+            this.listener=listener;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpClient httpclient = new DefaultHttpClient();
+            try {
+                URIBuilder builder = new URIBuilder(cognitiveServicesBaseUrl + "/detect");
+                builder.setParameter("returnFaceId", "true");
+                builder.setParameter("returnFaceLandmarks", "false");
+
+                URI uri = builder.build();
+                HttpPost request = new HttpPost(uri);
+
+                request.setHeader("Content-Type", "application/octet-stream");
+                request.setHeader("Ocp-Apim-Subscription-Key", cognitiveServicesAPIKey);
+
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-                ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
-                // Start a background task to detect faces in the image.
-                new DetectionTask().execute(inputStream);
-            }
+                request.setEntity(new ByteArrayEntity(output.toByteArray()));
 
+                HttpResponse response = httpclient.execute(request);
+                HttpEntity entity = response.getEntity();
 
-            Intent goToAddPatient = new Intent(this, NewPatientActivity.class);
-            startActivity(goToAddPatient);
-
-        }
-    }
-
-
-    // Background task of face detection.
-    private class DetectionTask extends AsyncTask<InputStream, String, Face[]> {
-        private boolean mSucceed = true;
-
-        @Override
-        protected Face[] doInBackground(InputStream... params) {
-            // Get an instance of face service client to detect faces in image.
-            System.out.println("MADE IT 2");
-            FacesServiceImpl faceServiceClient = SampleApp.getFaceServiceClient();
-            try {
-                System.out.println("MADE IT 3");
-
-                // Start detection.
-                Face[] faces =  faceServiceClient.detect(
-                        params[0],  /* Input stream of image to detect */
-                        true,       /* Whether to return face ID */
-                        true,       /* Whether to return face landmarks */
-                        /* Which face attributes to analyze, currently we support:
-                           age,gender,headPose,smile,facialHair */
-                        new FacesServiceImpl.FaceAttributeType[] {
-                                FacesServiceImpl.FaceAttributeType.Age,
-                                FacesServiceImpl.FaceAttributeType.Gender,
-                                FacesServiceImpl.FaceAttributeType.Smile,
-                                FacesServiceImpl.FaceAttributeType.Glasses,
-                                FacesServiceImpl.FaceAttributeType.FacialHair,
-                                FacesServiceImpl.FaceAttributeType.Emotion,
-                                FacesServiceImpl.FaceAttributeType.HeadPose,
-                                FacesServiceImpl.FaceAttributeType.Accessories,
-                                FacesServiceImpl.FaceAttributeType.Blur,
-                                FacesServiceImpl.FaceAttributeType.Exposure,
-                                FacesServiceImpl.FaceAttributeType.Hair,
-                                FacesServiceImpl.FaceAttributeType.Makeup,
-                                FacesServiceImpl.FaceAttributeType.Noise,
-                                FacesServiceImpl.FaceAttributeType.Occlusion
-                        });
-                return faces;
-
+                if (entity != null) {
+                    result = EntityUtils.toString(entity);
+                }
             } catch (Exception e) {
-                mSucceed = false;
-                publishProgress(e.getMessage());
-                Log.e("ERROR ", "doInBackground: ", e);
-                return null;
+                e.printStackTrace();
+                return "failed";
             }
+            return result;
         }
 
         @Override
-        protected void onPreExecute() {
-            //mProgressDialog.show();
-            Log.e("ERROR ", "Request: Detecting in image " + mImageUri);
-        }
-
-        @Override
-        protected void onProgressUpdate(String... progress) {
-            //mProgressDialog.setMessage(progress[0]);
-            System.out.println(progress);
-        }
-
-        @Override
-        protected void onPostExecute(Face[] result) {
-            if (mSucceed) {
-                System.out.println("ERROR " + "Response: Success. Detected " + (result == null ? 0 : result.length)
-                        + " face(s) in " + mImageUri);
-            }
-            if (result != null){
-                UUID[] faceIds = new UUID[result.length];
-                int i = 0;
-                for (Face face:  result) {
-                    faceIds[i] = face.faceId;
-                    i++;
-                }
-                FacesServiceImpl faceServiceClient = SampleApp.getFaceServiceClient();
-                try {
-                    IdentifyResult[] ir = faceServiceClient.identity("Mad Hacks", faceIds, .75f, 1);
-                    System.out.println(ir.toString());
-                } catch (Exception ex){
-
-                }
-            }
-            // Show the result on screen when detection is done.
-            System.out.println("SUCCESS " + result);
+        protected void onPostExecute(String result) {
+            listener.onDetectCompleted(result.toString());
         }
     }
+
 
     @Override
     protected void onDestroy()
@@ -258,10 +339,11 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         actualDatabase.execSQL(DatabaseInfo.DATABASE_CREATE_RECORDS_TABLE);
     }
 
+
+
     private void closeDB()
     {
         maybeDatabase.close();
     }
-
 
 }

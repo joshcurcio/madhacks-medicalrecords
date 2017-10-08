@@ -30,23 +30,14 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-package com.badass.josh.medicalrecords.helper;
+package com.badass.josh.medicalrecords.common;
 
-import android.app.Application;
+import java.util.UUID;
 
-import com.badass.josh.medicalrecords.FacesServiceImpl;
-import com.badass.josh.medicalrecords.R;
+public class ClientError {
+    public String code;
 
-public class SampleApp extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        sFaceServiceClient = new FacesServiceImpl(getString(R.string.subscription_key));
-    }
+    public String message;
 
-    public static FacesServiceImpl getFaceServiceClient() {
-        return sFaceServiceClient = new FacesServiceImpl("8a3a544e256a468ca2057eda2562cd9a");
-    }
-
-    private static FacesServiceImpl sFaceServiceClient;
+    public UUID requestId;
 }
