@@ -95,27 +95,12 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                 galleryAddPic(photoFile);
             } catch (IOException ex) {
                 // Error occurred while creating the File
-
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 System.out.println("MADE IT");
-                mImageUri = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-
-                mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
-                        mImageUri, getContentResolver());
-                if(mBitmap != null) {
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-                    ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
-
-                    // Start a background task to detect faces in the image.
-                    new DetectionTask().execute(inputStream);
-                }
             }
         }
     }
@@ -125,6 +110,18 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
+        mImageUri = FileProvider.getUriForFile(this,
+                "com.example.android.fileprovider",
+                f);
+        mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
+                mImageUri, getContentResolver());
+        System.out.println("BITMAP NOT NULL");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
+
+        // Start a background task to detect faces in the image.
+        new DetectionTask().execute(inputStream);
     }
 
 
