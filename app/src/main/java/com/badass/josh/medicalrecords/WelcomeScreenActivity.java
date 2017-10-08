@@ -101,21 +101,21 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
                 mImageUri = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
                         photoFile);
 
                 mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
                         mImageUri, getContentResolver());
+                if(mBitmap != null) {
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+                    ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-                ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
-
-                // Start a background task to detect faces in the image.
-                new DetectionTask().execute(inputStream);
-
-
+                    // Start a background task to detect faces in the image.
+                    new DetectionTask().execute(inputStream);
+                }
             }
         }
     }
