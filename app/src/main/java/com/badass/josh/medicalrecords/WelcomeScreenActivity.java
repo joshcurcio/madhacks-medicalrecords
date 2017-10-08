@@ -1,58 +1,21 @@
 package com.badass.josh.medicalrecords;
 
-import android.app.ProgressDialog;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.provider.MediaStore;
 import android.graphics.Bitmap;
 
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.badass.josh.medicalrecords.helper.ImageHelper;
-import com.badass.josh.medicalrecords.helper.SampleApp;
-import com.microsoft.projectoxford.face.FaceServiceClient;
-import com.microsoft.projectoxford.face.contract.Emotion;
-import com.microsoft.projectoxford.face.contract.Face;
-import com.microsoft.projectoxford.face.contract.FacialHair;
-import com.microsoft.projectoxford.face.contract.HeadPose;
-import com.microsoft.projectoxford.face.contract.Accessory;
-import com.microsoft.projectoxford.face.contract.Blur;
-import com.microsoft.projectoxford.face.contract.Exposure;
-import com.microsoft.projectoxford.face.contract.Hair;
-import com.microsoft.projectoxford.face.contract.Makeup;
-import com.microsoft.projectoxford.face.contract.Noise;
-import com.microsoft.projectoxford.face.contract.Occlusion;
-
 public class WelcomeScreenActivity extends AppCompatActivity {
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-
-    // Flag to indicate which task is to be performed.
-    private static final int REQUEST_SELECT_IMAGE = 0;
-
-    // The URI of the image selected to detect.
-    private Uri mImageUri;
-
-    // The image selected to detect.
-    private Bitmap mBitmap;
-
-    // Progress dialog popped up when communicating with server.
-    ProgressDialog mProgressDialog;
-    String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +28,12 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         System.out.println("Button press");
         this.dispatchTakePictureIntent();
     }
+
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+
+    String mCurrentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -92,104 +61,27 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
-                galleryAddPic(photoFile);
             } catch (IOException ex) {
                 // Error occurred while creating the File
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                System.out.println("MADE IT");
+                galleryAddPic();
             }
         }
     }
 
-    private void galleryAddPic(File f) {
+    private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
-        mImageUri = FileProvider.getUriForFile(this,
-                "com.example.android.fileprovider",
-                f);
-        mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
-                mImageUri, getContentResolver());
-        System.out.println("BITMAP NOT NULL");
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
-
-        // Start a background task to detect faces in the image.
-        new DetectionTask().execute(inputStream);
-    }
-
-
-    // Background task of face detection.
-    private class DetectionTask extends AsyncTask<InputStream, String, Face[]> {
-        private boolean mSucceed = true;
-
-        @Override
-        protected Face[] doInBackground(InputStream... params) {
-            // Get an instance of face service client to detect faces in image.
-            System.out.println("MADE IT 2");
-            FaceServiceClient faceServiceClient = SampleApp.getFaceServiceClient();
-            try {
-                System.out.println("MADE IT 3");
-
-                // Start detection.
-                return faceServiceClient.detect(
-                        params[0],  /* Input stream of image to detect */
-                        true,       /* Whether to return face ID */
-                        true,       /* Whether to return face landmarks */
-                        /* Which face attributes to analyze, currently we support:
-                           age,gender,headPose,smile,facialHair */
-                        new FaceServiceClient.FaceAttributeType[] {
-                                FaceServiceClient.FaceAttributeType.Age,
-                                FaceServiceClient.FaceAttributeType.Gender,
-                                FaceServiceClient.FaceAttributeType.Smile,
-                                FaceServiceClient.FaceAttributeType.Glasses,
-                                FaceServiceClient.FaceAttributeType.FacialHair,
-                                FaceServiceClient.FaceAttributeType.Emotion,
-                                FaceServiceClient.FaceAttributeType.HeadPose,
-                                FaceServiceClient.FaceAttributeType.Accessories,
-                                FaceServiceClient.FaceAttributeType.Blur,
-                                FaceServiceClient.FaceAttributeType.Exposure,
-                                FaceServiceClient.FaceAttributeType.Hair,
-                                FaceServiceClient.FaceAttributeType.Makeup,
-                                FaceServiceClient.FaceAttributeType.Noise,
-                                FaceServiceClient.FaceAttributeType.Occlusion
-                        });
-            } catch (Exception e) {
-                mSucceed = false;
-                publishProgress(e.getMessage());
-                Log.e("ERROR ", "doInBackground: ", e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mProgressDialog.show();
-            Log.e("ERROR ", "Request: Detecting in image " + mImageUri);
-        }
-
-        @Override
-        protected void onProgressUpdate(String... progress) {
-            mProgressDialog.setMessage(progress[0]);
-            Log.d("SUCCESS", "onProgressUpdate: " , new Exception());
-        }
-
-        @Override
-        protected void onPostExecute(Face[] result) {
-            if (mSucceed) {
-                System.out.println("ERROR " + "Response: Success. Detected " + (result == null ? 0 : result.length)
-                        + " face(s) in " + mImageUri);
-            }
-
-            // Show the result on screen when detection is done.
-            System.out.println("SUCCESS " + result.toString());
-        }
     }
 
 }
