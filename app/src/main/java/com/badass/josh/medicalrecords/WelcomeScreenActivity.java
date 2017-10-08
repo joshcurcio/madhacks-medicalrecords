@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
@@ -15,20 +14,14 @@ import android.view.View;
 import android.provider.MediaStore;
 import android.graphics.Bitmap;
 
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 import com.badass.josh.medicalrecords.helper.ImageHelper;
-import com.microsoft.projectoxford.face.contract.Face;
-import com.microsoft.projectoxford.face.contract.IdentifyResult;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -153,8 +146,8 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
     @Override
     public void onDetectCompleted(String result) {
         if (result == "failed") {
-            Intent newPatientIntent = new Intent(this, NewPatientActivity.class);
-            startActivity(newPatientIntent);
+            Intent welcomeIntent = new Intent(this, WelcomeScreenActivity.class);
+            startActivity(welcomeIntent);
             return;
         }
         try
@@ -184,9 +177,14 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
 
     @Override
     public void onGetPersonCompleted(String personName) {
-        WelcomeScreenActivity.maybeDatabase.getPatientInfo(Integer.parseInt(personName));
-        Intent patientInfoIntent = new Intent(this, PatientProfileActivity.class);
-        startActivity(patientInfoIntent);
+        boolean isFound = WelcomeScreenActivity.maybeDatabase.getPatientInfo(Integer.parseInt(personName));
+        if(isFound){
+            Intent patientInfoIntent = new Intent(this, PatientProfileActivity.class);
+            startActivity(patientInfoIntent);
+        } else {
+            Intent newPatientIntent = new Intent(this, NewPatientActivity.class);
+            startActivity(newPatientIntent);
+        }
     }
 
     public class CSFaceGetPersonTask extends AsyncTask<String, Void, String> {
