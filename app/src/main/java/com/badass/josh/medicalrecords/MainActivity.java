@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity
 
         openDB();
 
-        setContentView(R.layout.activity_main);
     }
 
     @Override

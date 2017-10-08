@@ -4,8 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
-import static com.badass.josh.medicalrecords.MainActivity.actualDatabase;
-import static com.badass.josh.medicalrecords.MainActivity.bigDatabase;
+import static com.badass.josh.medicalrecords.WelcomeScreenActivity.actualDatabase;
+import static com.badass.josh.medicalrecords.WelcomeScreenActivity.bigDatabase;
+
 
 /**
  * Created by timwildauer on 10/7/17.
@@ -31,7 +32,7 @@ public class DatabaseInfo
                     + " (" + DATABASE_TABLE_PATIENTS_ID_NAME + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + DATABASE_TABLE_PATIENTS_NAME_NAME + " TEXT NOT NULL, "
                     + DATABASE_TABLE_PATIENTS_DOB_NAME + " TEXT NOT NULL, "
-                    + DATABASE_TABLE_PATIENTS_LOCATION_NAME + " INTEGER NULL, "
+                    + DATABASE_TABLE_PATIENTS_LOCATION_NAME + " INTEGER NOT NULL"
                     + ");";
 
     public static final String DATABASE_TABLE_RECORDS = "records";
@@ -54,9 +55,9 @@ public class DatabaseInfo
                     + " (" + DATABASE_TABLE_RECORDS_ID_NAME + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " REFERENCES " + DATABASE_TABLE_PATIENTS + " (" + DATABASE_TABLE_PATIENTS_ID_NAME + "), "
                     + DATABASE_TABLE_RECORDS_TYPE_NAME + " TEXT NOT NULL, "
-                    + DATABASE_TABLE_RECORDS_DESCRIPTION_NAME + " TEXT NOT NULL"
+                    + DATABASE_TABLE_RECORDS_DESCRIPTION_NAME + " TEXT NOT NULL, "
                     + DATABASE_TABLE_RECORDS_DATE_START_NAME + " INTEGER NOT NULL, "
-                    + DATABASE_TABLE_RECORDS_DATE_END_NAME + " INTEGER DEFAULT 1, "
+                    + DATABASE_TABLE_RECORDS_DATE_END_NAME + " INTEGER DEFAULT 1"
                     + ");";
 
 

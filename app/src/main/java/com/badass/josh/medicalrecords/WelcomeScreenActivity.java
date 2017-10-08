@@ -1,7 +1,9 @@
 package com.badass.josh.medicalrecords;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,16 +19,28 @@ import java.util.Date;
 
 public class WelcomeScreenActivity extends AppCompatActivity {
 
+    public static DatabaseHelper bigDatabase;
+    public static SQLiteDatabase actualDatabase;
+    public static DatabaseInfo maybeDatabase;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
+
+        bigDatabase = DatabaseHelper.getInstance(this);
+
+        openDB();
+
     }
 
 
     public void takePictureButtonPressed(View v) {
         System.out.println("Button press");
         this.dispatchTakePictureIntent();
+
+
     }
 
 
@@ -62,6 +76,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             try {
                 photoFile = createImageFile();
                 galleryAddPic(photoFile);
+                goToNewPatient();
             } catch (IOException ex) {
                 // Error occurred while creating the File
 
@@ -73,8 +88,13 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
+                Intent goToNewPatientInfoIntent = new Intent(this, NewPatientActivity.class);
+                startActivity(goToNewPatientInfoIntent);
+
             }
         }
+
     }
 
     private void galleryAddPic(File f) {
@@ -83,5 +103,30 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
+
+
+    private void goToNewPatient() {
+        Intent goToNewPatientInfoIntent = new Intent(this, NewPatientActivity.class);
+        startActivity(goToNewPatientInfoIntent);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        closeDB();
+    }
+
+    private void openDB()
+    {
+        maybeDatabase = new DatabaseInfo();
+        maybeDatabase.open();
+    }
+
+    private void closeDB()
+    {
+        maybeDatabase.close();
+    }
+
 
 }

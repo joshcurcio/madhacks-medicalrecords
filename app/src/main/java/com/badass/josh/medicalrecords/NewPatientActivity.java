@@ -1,6 +1,7 @@
 package com.badass.josh.medicalrecords;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
     EditText patientLocation;
     Button newPatientButton;
 
+    Long patientID;
     String patientNameString;
     String patientDOBString;
     String patientLocationString;
@@ -60,9 +62,19 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
         if (!patientNameString.isEmpty() && !patientDOBString.isEmpty() && !patientLocationString.isEmpty())
         {
             int location = Integer.parseInt(patientLocationString);
-            MainActivity.maybeDatabase.addNewPatient(patientNameString, patientDOBString, location);
+            patientID = MainActivity.maybeDatabase.addNewPatient(patientNameString, patientDOBString, location);
         }
 
+        goToNewPatientInfo();
+
+    }
+
+    private void goToNewPatientInfo() {
+        Intent patientInfoIntent = new Intent(this, PatientProfileActivity.class);
+        patientInfoIntent.putExtra("patient_id", patientID);
+        patientInfoIntent.putExtra("patient_name", patientNameString);
+        startActivity(patientInfoIntent);
+        finish();
     }
 
 
