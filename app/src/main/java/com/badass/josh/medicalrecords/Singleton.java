@@ -14,6 +14,7 @@ public class Singleton {
     public static String patientName = "";
     public static String patientDOB = "";
     public static String patientLocation = "";
+    public static String userEmail = "";
 
     public static Bitmap mBitmap;
 
