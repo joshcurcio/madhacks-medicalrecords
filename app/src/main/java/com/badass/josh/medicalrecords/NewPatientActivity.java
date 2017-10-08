@@ -44,7 +44,7 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
             }
         });
 
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, NewPatientActivity.this, 2000, 0, 0);
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, NewPatientActivity.this, 2000, 0, 1);
         patientDOB.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -58,6 +58,13 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
     private void createNewPatient()
     {
+        patientNameString = patientName.getText().toString().trim();
+        patientDOBString = patientDOB.getText().toString().trim();
+        patientLocationString = patientLocation.getText().toString().trim();
+
+        Singleton.patientName = patientNameString;
+        Singleton.patientDOB = patientDOBString;
+        Singleton.patientLocation = patientLocationString;
         Singleton.patientName = patientName.getText().toString();
         Singleton.patientDOB = patientDOB.getText().toString();
         Singleton.patientLocation = patientLocation.getText().toString();

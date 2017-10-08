@@ -63,7 +63,7 @@ public class DatabaseInfo
 
     public static final String DATABASE_VIEW_MAINTENANCE = "maintenance_records";
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
 
     public static final String[] DATABASE_TABLE_LIST = {DATABASE_TABLE_PATIENTS, DATABASE_TABLE_RECORDS};
 
@@ -105,14 +105,14 @@ public class DatabaseInfo
     public void updateRecord(Long recordID, Long patientID, String newType, String newDescription, String newStartDate, String newEndDate)
     {
         ContentValues newContentValues = new ContentValues();
-        newContentValues.put(DATABASE_TABLE_RECORDS_ID_NAME, recordID);
+        //newContentValues.put(DATABASE_TABLE_RECORDS_ID_NAME, recordID);
         newContentValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, patientID);
         newContentValues.put(DATABASE_TABLE_RECORDS_TYPE_NAME, newType);
         newContentValues.put(DATABASE_TABLE_RECORDS_DESCRIPTION_NAME, newDescription);
         newContentValues.put(DATABASE_TABLE_RECORDS_DATE_START_NAME, newStartDate);
         newContentValues.put(DATABASE_TABLE_RECORDS_DATE_END_NAME, newEndDate);
 
-        actualDatabase.update(DATABASE_TABLE_PATIENTS, newContentValues, DATABASE_TABLE_RECORDS_ID_NAME + "=" + recordID, null);
+        actualDatabase.update(DATABASE_TABLE_RECORDS, newContentValues, DATABASE_TABLE_RECORDS_ID_NAME + "=?", new String[] {"" + recordID});// + "=" + recordID, null);
     }
 
 
