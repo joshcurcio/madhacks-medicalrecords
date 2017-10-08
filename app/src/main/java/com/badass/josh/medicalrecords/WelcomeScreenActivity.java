@@ -53,7 +53,7 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
 
     private Uri mImageUri;
 
-    private Bitmap mBitmap;
+
 
     ProgressDialog mProgressDialog;
     String mCurrentPhotoPath;
@@ -125,9 +125,9 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
         if (requestCode == REQUEST_TAKE_PHOTO)
         {
             galleryAddPic(photoFile);
-            mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
+            Singleton.mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
                     mImageUri, getContentResolver());
-            if(mBitmap != null) {
+            if(Singleton.mBitmap != null) {
                 /*ByteArrayOutputStream output = new ByteArrayOutputStream();
                 mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());*/
@@ -179,6 +179,7 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
     public void onGetPersonCompleted(String personName) {
         boolean isFound = WelcomeScreenActivity.maybeDatabase.getPatientInfo(Integer.parseInt(personName));
         if(isFound){
+            Singleton.patientID = Long.parseLong(personName);
             Intent patientInfoIntent = new Intent(this, PatientProfileActivity.class);
             startActivity(patientInfoIntent);
         } else {
@@ -300,7 +301,7 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
                 request.setHeader("Ocp-Apim-Subscription-Key", cognitiveServicesAPIKey);
 
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
-                mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+                Singleton.mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
 
                 request.setEntity(new ByteArrayEntity(output.toByteArray()));
 

@@ -1,5 +1,7 @@
 package com.badass.josh.medicalrecords;
 
+import android.graphics.Bitmap;
+
 import java.util.HashMap;
 
 /**
@@ -12,6 +14,8 @@ public class Singleton {
     public static String patientName = "";
     public static String patientDOB = "";
     public static String patientLocation = "";
+
+    public static Bitmap mBitmap;
 
     public static enum LOCATIONS {
         MADISON (0),
