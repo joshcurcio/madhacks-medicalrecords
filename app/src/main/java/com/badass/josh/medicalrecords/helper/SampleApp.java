@@ -34,17 +34,15 @@ package com.badass.josh.medicalrecords.helper;
 
 import android.app.Application;
 
+import com.badass.josh.medicalrecords.R;
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.FaceServiceRestClient;
 
 public class SampleApp extends Application {
-
-    private static String ENDPOINT = "https://eastus.api.cognitive.microsoft.com/face/v1.0";
-    private static String KEY = "4769e3e93c4f4f9fa25f2d55e4f64aba";
     @Override
     public void onCreate() {
         super.onCreate();
-        sFaceServiceClient = new FaceServiceRestClient(ENDPOINT, KEY);
+        sFaceServiceClient = new FaceServiceRestClient(getString(R.string.endpoint), getString(R.string.subscription_key));
     }
 
     public static FaceServiceClient getFaceServiceClient() {
