@@ -83,16 +83,16 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     }
 
     static final int REQUEST_TAKE_PHOTO = 1;
-
+    static File photoFile = null;
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
+
             try {
                 photoFile = createImageFile();
-                galleryAddPic(photoFile);
+
             } catch (IOException ex) {
                 // Error occurred while creating the File
             }
@@ -105,23 +105,43 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void galleryAddPic(File f) {
+    private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
+        mImageUri = Uri.fromFile(photoFile);
+        mediaScanIntent.setData(mImageUri);
         this.sendBroadcast(mediaScanIntent);
-        mImageUri = FileProvider.getUriForFile(this,
-                "com.example.android.fileprovider",
-                f);
-        mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
-                mImageUri, getContentResolver());
-        System.out.println("BITMAP NOT NULL");
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
 
-        // Start a background task to detect faces in the image.
-        new DetectionTask().execute(inputStream);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        if (requestCode == REQUEST_TAKE_PHOTO)
+        {
+            galleryAddPic();
+            //mImageUri = intent.getData();
+            System.out.println("before : " + mImageUri);
+
+            System.out.println("got the result");
+            mImageUri = FileProvider.getUriForFile(this,
+                    "com.example.android.fileprovider",
+                    photoFile);
+            System.out.println("after : " + mImageUri);
+
+            mBitmap = ImageHelper.loadSizeLimitedBitmapFromUri(
+                    mImageUri, getContentResolver());
+            System.out.println("BITMAP NOT NULL");
+            if(mBitmap != null) {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
+
+                // Start a background task to detect faces in the image.
+                new DetectionTask().execute(inputStream);
+            }
+
+
+            Intent goToAddPatient = new Intent();
+
+        }
     }
 
 

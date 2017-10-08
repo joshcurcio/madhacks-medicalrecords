@@ -10,7 +10,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import java.util.List;
 
-import static com.badass.josh.medicalrecords.MainActivity.maybeDatabase;
 
 public class PatientProfileActivity extends AppCompatActivity {
 
@@ -68,7 +67,7 @@ public class PatientProfileActivity extends AppCompatActivity {
 
     private void getPatientRecords(Long patientIDNum)
     {
-        Cursor c = maybeDatabase.returnAllRecords(patientIDNum);
+        Cursor c = MainActivity.maybeDatabase.returnAllRecords(patientIDNum);
 
         recordIDArray.clear();
         recordTypeArray.clear();
