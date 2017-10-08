@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1067792977596",
+    "firebase_url": "https://medicalrecords-8371b.firebaseio.com",
+    "project_id": "medicalrecords-8371b",
+    "storage_bucket": "medicalrecords-8371b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067792977596:android:55167b8edf4dd7c7",
+        "android_client_info": {
+          "package_name": "com.badass.josh.medicalrecords"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067792977596-4i9lbkh0dtd8ljaflgrb6av47gggatfk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf6Fk81I-VCHDURVlTWuJHZKMh9YVkk7E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
