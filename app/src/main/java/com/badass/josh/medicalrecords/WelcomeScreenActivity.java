@@ -135,9 +135,10 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         @Override
         protected Face[] doInBackground(InputStream... params) {
             // Get an instance of face service client to detect faces in image.
+            System.out.println("MADE IT 2");
             FaceServiceClient faceServiceClient = SampleApp.getFaceServiceClient();
             try {
-                System.out.println("MADE IT 2");
+                System.out.println("MADE IT 3");
 
                 // Start detection.
                 return faceServiceClient.detect(
