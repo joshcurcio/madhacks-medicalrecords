@@ -63,7 +63,7 @@ public class DatabaseInfo
 
     public static final String DATABASE_VIEW_MAINTENANCE = "maintenance_records";
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
 
     public static final String[] DATABASE_TABLE_LIST = {DATABASE_TABLE_PATIENTS, DATABASE_TABLE_RECORDS};
 

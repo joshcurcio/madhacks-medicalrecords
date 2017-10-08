@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.33"
                     android:ems="10"
-                    android:inputType="number"
+                    android:inputType="textAutoComplete"
                     android:text="1"
                     tools:layout_editor_absoluteX="153dp"
                     tools:layout_editor_absoluteY="108dp" />

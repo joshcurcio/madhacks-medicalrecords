@@ -25,6 +25,7 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
     String patientNameString;
     String patientDOBString;
     String patientLocationString;
+    AutoCompleteTextView acTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +42,12 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice, Singleton.stringLocations);
         //Find TextView control
-        AutoCompleteTextView acTextView = (AutoCompleteTextView) findViewById(R.id.locationEditText);
+        acTextView = (AutoCompleteTextView) findViewById(R.id.locationEditText);
         //Set the number of characters the user must type before the drop down list is shown
         acTextView.setThreshold(0);
         //Set the adapter
         acTextView.setAdapter(adapter);
+        acTextView.setText("");
 
 
         newPatientButton.setOnClickListener(new View.OnClickListener() {
@@ -71,20 +73,23 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
     {
         patientNameString = patientName.getText().toString().trim();
         patientDOBString = patientDOB.getText().toString().trim();
-        patientLocationString = patientLocation.getText().toString().trim();
+        String patientLocationText = acTextView.getText().toString().trim();
+
+        Singleton.LOCATIONS locations = Singleton.LOCATIONS.valueOf(patientLocationText);
+
 
         Singleton.patientName = patientNameString;
         Singleton.patientDOB = patientDOBString;
-        Singleton.patientLocation = patientLocationString;
         Singleton.patientName = patientName.getText().toString();
         Singleton.patientDOB = patientDOB.getText().toString();
-        Singleton.patientLocation = patientLocation.getText().toString();
+        Singleton.patientLocation = patientLocationText;
 
 
 
         if (!Singleton.patientName.isEmpty() && !Singleton.patientDOB.isEmpty() && !Singleton.patientLocation.isEmpty())
         {
-            int location = Integer.parseInt(Singleton.patientLocation);
+
+            int location = locations.getUserLocation();
             Singleton.patientID = WelcomeScreenActivity.maybeDatabase.addNewPatient(Singleton.patientName, Singleton.patientDOB, location);
         }
 
@@ -99,9 +104,36 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
 
     @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-        int day = dayOfMonth + 1;
-        Singleton.patientDOB  = year + "-" + month + "-" + day;
+    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth)
+    {
+        month = month + 1;
+        String endDateYear, endDateMonth, endDateDay;
+
+        endDateYear = "0000" + year;
+
+        if (month < 10)
+        {
+
+            endDateMonth = "0" + month;
+        }
+        else
+        {
+            endDateMonth = "" + month;
+        }
+        if (dayOfMonth < 10)
+        {
+
+            endDateDay = "0" + dayOfMonth;
+        }
+        else
+        {
+            endDateDay = "" + dayOfMonth;
+        }
+
+        patientDOBString = endDateYear.substring(endDateYear.length() - 4) + "-" + endDateMonth + "-" + endDateDay;
+        patientDOB.setText(patientDOBString);
+
+        Singleton.patientDOB  = patientDOBString;
         patientDOB.setText( Singleton.patientDOB );
     }
 
