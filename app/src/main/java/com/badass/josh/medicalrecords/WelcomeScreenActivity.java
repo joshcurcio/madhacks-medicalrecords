@@ -101,7 +101,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-
+                System.out.println("MADE IT");
                 mImageUri = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
                         photoFile);
@@ -137,7 +137,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             // Get an instance of face service client to detect faces in image.
             FaceServiceClient faceServiceClient = SampleApp.getFaceServiceClient();
             try {
-                publishProgress("Detecting...");
+                System.out.println("MADE IT 2");
 
                 // Start detection.
                 return faceServiceClient.detect(
@@ -185,12 +185,12 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Face[] result) {
             if (mSucceed) {
-                Log.e("ERROR ", "Response: Success. Detected " + (result == null ? 0 : result.length)
+                System.out.println("ERROR " + "Response: Success. Detected " + (result == null ? 0 : result.length)
                         + " face(s) in " + mImageUri);
             }
 
             // Show the result on screen when detection is done.
-            Log.i("SUCCESS", result.toString() ,new Exception());
+            System.out.println("SUCCESS " + result.toString());
         }
     }
 
