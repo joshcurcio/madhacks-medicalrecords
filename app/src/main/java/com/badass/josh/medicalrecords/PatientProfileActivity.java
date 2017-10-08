@@ -54,7 +54,7 @@ public class PatientProfileActivity extends AppCompatActivity {
         if (newRecord == 0) {
             Singleton.isNew = true;
             moveToRecordInfo.putExtra("record_id", recordIDArray.get(i));
-            moveToRecordInfo.putExtra("patient_id", patientID);
+            moveToRecordInfo.putExtra("patient_id", Singleton.patientID);
             moveToRecordInfo.putExtra("patient_name", patientName);
             moveToRecordInfo.putExtra("type", recordTypeArray.get(i));
             moveToRecordInfo.putExtra("description", recordDescriptionArray.get(i));
@@ -67,9 +67,9 @@ public class PatientProfileActivity extends AppCompatActivity {
 
     }
 
-    private void getPatientRecords(Long patientIDNum)
+    private void getPatientRecords()
     {
-        Cursor c = WelcomeScreenActivity.maybeDatabase.returnAllRecords(patientIDNum);
+        Cursor c = WelcomeScreenActivity.maybeDatabase.returnAllRecords();
 
         recordIDArray.clear();
         recordTypeArray.clear();
@@ -127,7 +127,7 @@ public class PatientProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_patient_profile);
 
 
-        getPatientRecords(patientID);
+        getPatientRecords();
         addEventButton = (Button) findViewById(R.id.newEventButton);
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override

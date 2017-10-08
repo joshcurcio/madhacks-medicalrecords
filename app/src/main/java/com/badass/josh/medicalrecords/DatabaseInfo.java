@@ -79,15 +79,14 @@ public class DatabaseInfo
         return actualDatabase.insert(DATABASE_TABLE_PATIENTS, null, newPatientValues);
     }
 
-    public long addNewRecord(Long patientID, String type, String description, String startDate, String endDate)
+    public long addNewRecord(String type, String description, String startDate, String endDate)
     {
         ContentValues newPatientValues = new ContentValues();
-        newPatientValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, 2); //patientID);
+        newPatientValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, Singleton.patientID); //patientID);
         newPatientValues.put(DATABASE_TABLE_RECORDS_TYPE_NAME, type);
         newPatientValues.put(DATABASE_TABLE_RECORDS_DESCRIPTION_NAME, description);
         newPatientValues.put(DATABASE_TABLE_RECORDS_DATE_START_NAME, startDate);
         newPatientValues.put(DATABASE_TABLE_RECORDS_DATE_END_NAME, endDate);
-
         return actualDatabase.insert(DATABASE_TABLE_RECORDS, null, newPatientValues);
     }
 
@@ -97,19 +96,19 @@ public class DatabaseInfo
         return c;
     }
 
-    public Cursor returnAllRecords(Long patient_id)
+    public Cursor returnAllRecords()
     {
 
-        System.out.println(patient_id);
-        String where = DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + "=" + patient_id;
+        System.out.println(Singleton.patientID);
+        String where = DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + "=" + Singleton.patientID;
         Log.d("found", "" );
         Cursor c = actualDatabase.query(true, DATABASE_TABLE_RECORDS, DATABASE_RECORDS_NAMES, null, null, null, null, null, null);
 
 
-        Cursor killMeNow = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = " + 2, null);
+        Cursor killMeNow = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = " + Integer.parseInt(Long.toString(Singleton.patientID)), null);
 //        Cursor c = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{"" + patient_id});
-        Cursor c1 = actualDatabase.query(DATABASE_TABLE_RECORDS, null, DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{patient_id.toString()}, null, null, null);
-        Cursor c2 = actualDatabase.query(true, DATABASE_TABLE_RECORDS, DATABASE_RECORDS_NAMES, where, null, null, null, null, null);
+//        Cursor c1 = actualDatabase.query(DATABASE_TABLE_RECORDS, null, DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{patient_id.toString()}, null, null, null);
+//        Cursor c2 = actualDatabase.query(true, DATABASE_TABLE_RECORDS, DATABASE_RECORDS_NAMES, where, null, null, null, null, null);
         return killMeNow;
     }
 

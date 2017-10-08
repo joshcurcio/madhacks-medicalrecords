@@ -78,7 +78,7 @@ public class RecordDetailsActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Long result = maybeDatabase.addNewRecord(patientID, recordType, recordDescription, startDate, endDate);
+                    Long result = maybeDatabase.addNewRecord(recordType, recordDescription, startDate, endDate);
                     System.out.println(result);
                 }
 

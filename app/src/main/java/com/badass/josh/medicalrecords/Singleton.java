@@ -6,4 +6,5 @@ package com.badass.josh.medicalrecords;
 
 public class Singleton {
     public static boolean isNew = true;
+    public static long patientID = 0;
 }
