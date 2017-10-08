@@ -53,7 +53,7 @@ public class DatabaseInfo
     public static final String DATABASE_CREATE_RECORDS_TABLE =
             "CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE_RECORDS
                     + " (" + DATABASE_TABLE_RECORDS_ID_NAME + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " REFERENCES " + DATABASE_TABLE_PATIENTS + " (" + DATABASE_TABLE_PATIENTS_ID_NAME + "), "
+                    + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " INTEGER NOT NULL, "
                     + DATABASE_TABLE_RECORDS_TYPE_NAME + " TEXT NOT NULL, "
                     + DATABASE_TABLE_RECORDS_DESCRIPTION_NAME + " TEXT NOT NULL, "
                     + DATABASE_TABLE_RECORDS_DATE_START_NAME + " INTEGER NOT NULL, "
@@ -63,7 +63,7 @@ public class DatabaseInfo
 
     public static final String DATABASE_VIEW_MAINTENANCE = "maintenance_records";
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
 
     public static final String[] DATABASE_TABLE_LIST = {DATABASE_TABLE_PATIENTS, DATABASE_TABLE_RECORDS};
 
@@ -82,7 +82,7 @@ public class DatabaseInfo
     public long addNewRecord(Long patientID, String type, String description, String startDate, String endDate)
     {
         ContentValues newPatientValues = new ContentValues();
-        newPatientValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, patientID);
+        newPatientValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, 2); //patientID);
         newPatientValues.put(DATABASE_TABLE_RECORDS_TYPE_NAME, type);
         newPatientValues.put(DATABASE_TABLE_RECORDS_DESCRIPTION_NAME, description);
         newPatientValues.put(DATABASE_TABLE_RECORDS_DATE_START_NAME, startDate);
@@ -100,12 +100,17 @@ public class DatabaseInfo
     public Cursor returnAllRecords(Long patient_id)
     {
 
+        System.out.println(patient_id);
         String where = DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + "=" + patient_id;
         Log.d("found", "" );
-        Cursor c = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{"" + patient_id});
+        Cursor c = actualDatabase.query(true, DATABASE_TABLE_RECORDS, DATABASE_RECORDS_NAMES, null, null, null, null, null, null);
+
+
+        Cursor killMeNow = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = " + 2, null);
+//        Cursor c = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{"" + patient_id});
         Cursor c1 = actualDatabase.query(DATABASE_TABLE_RECORDS, null, DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{patient_id.toString()}, null, null, null);
         Cursor c2 = actualDatabase.query(true, DATABASE_TABLE_RECORDS, DATABASE_RECORDS_NAMES, where, null, null, null, null, null);
-        return c2;
+        return killMeNow;
     }
 
     public void updateRecord(Long recordID, Long patientID, String newType, String newDescription, String newStartDate, String newEndDate)
