@@ -29,41 +29,21 @@ public class PatientProfileActivity extends AppCompatActivity {
 
     Button addEventButton;
 
+    ListAdapter patientRecordAdapter;
+    ListView recordsListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patient_profile);
 
 
         Intent hello = getIntent();
 
         patientID = hello.getLongExtra("patient_id", 0);
         patientName = hello.getStringExtra("patient_name");
-        getPatientRecords(patientID);
+        setContentView(R.layout.activity_patient_profile);
 
-        addEventButton = (Button) findViewById(R.id.newEventButton);
-        addEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                newRecord = 1;
-                moveToRecordInfo(0);
-            }
-        });
-
-        ListAdapter patientRecordAdapter = new PatientRecordAdapter(this, recordTypeArray, recordDescriptionArray,
-                recordStartDateArray, recordEndDateArray);
-        ListView recordsListView = (ListView) this.findViewById(R.id.recordsListView);
-        recordsListView.setAdapter(patientRecordAdapter);
-        recordsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                newRecord = 0;
-                moveToRecordInfo(i);
-            }
-        });
-
+        setView();
     }
 
     private void moveToRecordInfo(int i)
@@ -83,7 +63,7 @@ public class PatientProfileActivity extends AppCompatActivity {
         } else {
             Singleton.isNew = false;
         }
-        startActivity(moveToRecordInfo);
+        startActivityForResult(moveToRecordInfo, 0);
 
     }
 
@@ -113,10 +93,64 @@ public class PatientProfileActivity extends AppCompatActivity {
                 recordStartDateArray.add(recordStartDate);
                 recordEndDateArray.add(recordEndDate);
 
+                System.out.println(recordEndDate);
+
+
             }
             while (c.moveToNext());
 
         }
         c.close();
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent)
+    {
+        /*setContentView(R.layout.activity_patient_profile);
+        getPatientRecords(patientID);
+        recordsListView.setAdapter(patientRecordAdapter);
+        recordsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                newRecord = 0;
+                moveToRecordInfo(i);
+            }
+        });*/
+        setView();
+
+    }
+
+
+    public void setView()
+    {
+
+        setContentView(R.layout.activity_patient_profile);
+
+
+        getPatientRecords(patientID);
+        addEventButton = (Button) findViewById(R.id.newEventButton);
+        addEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                newRecord = 1;
+                moveToRecordInfo(0);
+            }
+        });
+
+        patientRecordAdapter = new PatientRecordAdapter(this, recordTypeArray, recordDescriptionArray,
+                recordStartDateArray, recordEndDateArray);
+        recordsListView = (ListView) this.findViewById(R.id.recordsListView);
+        recordsListView.setAdapter(patientRecordAdapter);
+        recordsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                newRecord = 0;
+                moveToRecordInfo(i);
+            }
+        });
+
+    }
+
 }

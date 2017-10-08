@@ -7,8 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import static com.badass.josh.medicalrecords.MainActivity.maybeDatabase;
-import static com.badass.josh.medicalrecords.Singleton.isNew;
+import static com.badass.josh.medicalrecords.WelcomeScreenActivity.maybeDatabase;
 
 public class RecordDetailsActivity extends AppCompatActivity {
 
@@ -32,6 +31,8 @@ public class RecordDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_record_details);
 
         // Setting up access to UI elements
         this.saveChangesButton = (Button) this.findViewById(R.id.saveChangesButton);
@@ -73,18 +74,20 @@ public class RecordDetailsActivity extends AppCompatActivity {
 
                 if (newRecord == 0) {
                     maybeDatabase.updateRecord(recordID, patientID, recordType, recordDescription, startDate, endDate);
+                    System.out.println("updated record");
                 }
                 else
                 {
-                    maybeDatabase.addNewRecord(patientID, recordType, recordDescription, startDate, endDate);
+                    Long result = maybeDatabase.addNewRecord(patientID, recordType, recordDescription, startDate, endDate);
+                    System.out.println(result);
                 }
 
+                setResult(0);
                 finish();
             }
         });
 
 
-        setContentView(R.layout.activity_record_details);
     }
 
 

@@ -99,9 +99,11 @@ public class DatabaseInfo
 
     public Cursor returnAllRecords(Long patient_id)
     {
+
         Log.d("found", "" );
         Cursor c = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{"" + patient_id});
-        return c;
+        Cursor c1 = actualDatabase.query(DATABASE_TABLE_RECORDS, null, DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{patient_id.toString()}, null, null, null);
+        return c1;
     }
 
     public void updateRecord(Long recordID, Long patientID, String newType, String newDescription, String newStartDate, String newEndDate)
