@@ -33,12 +33,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,10 +54,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     ProgressDialog dialog;
 
-    // [START declare_auth]
-    private FirebaseAuth mAuth;
-    // [END declare_auth]
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,9 +69,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.email_sign_in_button).setOnClickListener(this);
         findViewById(R.id.email_sign_up_button).setOnClickListener(this);
 
-        // [START initialize_auth]
-        mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
     }
 
     // [START on_start_check_user]
@@ -89,8 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+
     }
     // [END on_start_check_user]
 
@@ -103,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         showProgressDialog();
 
         // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
+        /*mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -124,7 +110,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         hideProgressDialog();
                         // [END_EXCLUDE]
                     }
-                });
+                });*/
         // [END create_user_with_email]
     }
 
@@ -143,9 +129,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        showProgressDialog();
+        Intent loginIntent = new Intent(this, WelcomeScreenActivity.class);
+        startActivity(loginIntent);
 
-        // [START sign_in_with_email]
+        /*showProgressDialog();*/
+
+
+        /*// [START sign_in_with_email]
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -171,7 +161,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         // [END_EXCLUDE]
                     }
                 });
-        // [END sign_in_with_email]
+        // [END sign_in_with_email]*/
     }
 
 
@@ -197,10 +187,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return valid;
     }
 
-    private void updateUI(FirebaseUser user) {
+    /*private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-/*
+*//*
             mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
                     user.getEmail(), user.isEmailVerified()));
             mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
@@ -210,21 +200,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
 
             findViewById(R.id.verify_email_button).setEnabled(!user.isEmailVerified());
-*/
+*//*
             Intent loginIntent = new Intent(this, WelcomeScreenActivity.class);
             startActivity(loginIntent);
 
         } else {
-/*
+*//*
             mStatusTextView.setText(R.string.signed_out);
             mDetailTextView.setText(null);
 
             findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
             findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
             findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
-*/
+*//*
         }
-    }
+    }*/
 
     @Override
     public void onClick(View v) {
