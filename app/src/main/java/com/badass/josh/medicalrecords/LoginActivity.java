@@ -3,6 +3,7 @@ package com.badass.josh.medicalrecords;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -144,6 +145,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+
+
+        // /* SKIP THE LOGIN AND GO STRAIGHT TO THE WELCOME SCREEN
+        Intent goToAddPatient = new Intent(this, WelcomeScreenActivity.class);
+        startActivity(goToAddPatient);
+
+        finish();
+
+        // */
+
         if (mAuthTask != null) {
             return;
         }
