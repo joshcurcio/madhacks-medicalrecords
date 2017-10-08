@@ -163,7 +163,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         protected Face[] doInBackground(InputStream... params) {
             // Get an instance of face service client to detect faces in image.
             System.out.println("MADE IT 2");
-            FaceServiceClient faceServiceClient = SampleApp.getFaceServiceClient();
+            FacesServiceImpl faceServiceClient = SampleApp.getFaceServiceClient();
             try {
                 System.out.println("MADE IT 3");
 
@@ -174,21 +174,21 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                         true,       /* Whether to return face landmarks */
                         /* Which face attributes to analyze, currently we support:
                            age,gender,headPose,smile,facialHair */
-                        new FaceServiceClient.FaceAttributeType[] {
-                                FaceServiceClient.FaceAttributeType.Age,
-                                FaceServiceClient.FaceAttributeType.Gender,
-                                FaceServiceClient.FaceAttributeType.Smile,
-                                FaceServiceClient.FaceAttributeType.Glasses,
-                                FaceServiceClient.FaceAttributeType.FacialHair,
-                                FaceServiceClient.FaceAttributeType.Emotion,
-                                FaceServiceClient.FaceAttributeType.HeadPose,
-                                FaceServiceClient.FaceAttributeType.Accessories,
-                                FaceServiceClient.FaceAttributeType.Blur,
-                                FaceServiceClient.FaceAttributeType.Exposure,
-                                FaceServiceClient.FaceAttributeType.Hair,
-                                FaceServiceClient.FaceAttributeType.Makeup,
-                                FaceServiceClient.FaceAttributeType.Noise,
-                                FaceServiceClient.FaceAttributeType.Occlusion
+                        new FacesServiceImpl.FaceAttributeType[] {
+                                FacesServiceImpl.FaceAttributeType.Age,
+                                FacesServiceImpl.FaceAttributeType.Gender,
+                                FacesServiceImpl.FaceAttributeType.Smile,
+                                FacesServiceImpl.FaceAttributeType.Glasses,
+                                FacesServiceImpl.FaceAttributeType.FacialHair,
+                                FacesServiceImpl.FaceAttributeType.Emotion,
+                                FacesServiceImpl.FaceAttributeType.HeadPose,
+                                FacesServiceImpl.FaceAttributeType.Accessories,
+                                FacesServiceImpl.FaceAttributeType.Blur,
+                                FacesServiceImpl.FaceAttributeType.Exposure,
+                                FacesServiceImpl.FaceAttributeType.Hair,
+                                FacesServiceImpl.FaceAttributeType.Makeup,
+                                FacesServiceImpl.FaceAttributeType.Noise,
+                                FacesServiceImpl.FaceAttributeType.Occlusion
                         });
             } catch (Exception e) {
                 mSucceed = false;
