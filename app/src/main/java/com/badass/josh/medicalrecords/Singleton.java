@@ -7,7 +7,7 @@ package com.badass.josh.medicalrecords;
 public class Singleton {
     public static boolean isNew = true;
     public static long patientID = 0;
-    public static String patientName;
-    public static String patientDOB;
-    public static String patientLocation;
+    public static String patientName = "";
+    public static String patientDOB = "";
+    public static String patientLocation = "";
 }

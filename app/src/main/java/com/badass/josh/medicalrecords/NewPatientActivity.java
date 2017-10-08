@@ -58,18 +58,16 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
     private void createNewPatient()
     {
-        patientNameString = patientName.getText().toString().trim();
-        patientDOBString = patientDOB.getText().toString().trim();
-        patientLocationString = patientLocation.getText().toString().trim();
-        Singleton.patientName = patientNameString;
-        Singleton.patientDOB = patientDOBString;
-        Singleton.patientLocation = patientLocationString;
+        Singleton.patientName = patientName.getText().toString();
+        Singleton.patientDOB = patientDOB.getText().toString();
+        Singleton.patientLocation = patientLocation.getText().toString();
 
 
-        if (!patientNameString.isEmpty() && !patientDOBString.isEmpty() && !patientLocationString.isEmpty())
+
+        if (!Singleton.patientName.isEmpty() && !Singleton.patientDOB.isEmpty() && !Singleton.patientLocation.isEmpty())
         {
-            int location = Integer.parseInt(patientLocationString);
-            Singleton.patientID = WelcomeScreenActivity.maybeDatabase.addNewPatient(patientNameString, patientDOBString, location);
+            int location = Integer.parseInt(Singleton.patientLocation);
+            Singleton.patientID = WelcomeScreenActivity.maybeDatabase.addNewPatient(Singleton.patientName, Singleton.patientDOB, location);
         }
 
         goToNewPatientInfo();
@@ -78,18 +76,15 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
     private void goToNewPatientInfo() {
         Intent patientInfoIntent = new Intent(this, PatientProfileActivity.class);
-        patientInfoIntent.putExtra("patient_id", Singleton.patientID);
-        patientInfoIntent.putExtra("patient_name", patientNameString);
         startActivity(patientInfoIntent);
-        finish();
     }
 
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
         int day = dayOfMonth + 1;
-        patientDOBString = year + "-" + month + "-" + day;
-        patientDOB.setText(patientDOBString);
+        Singleton.patientDOB  = year + "-" + month + "-" + day;
+        patientDOB.setText( Singleton.patientDOB );
     }
 
 

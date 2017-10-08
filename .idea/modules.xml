@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MedicalRecords.iml" filepath="$PROJECT_DIR$/MedicalRecords.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/madhacks-medicalrecords.iml" filepath="$PROJECT_DIR$/madhacks-medicalrecords.iml" />
       <module fileurl="file://$PROJECT_DIR$/madhacks-medicalrecords.iml" filepath="$PROJECT_DIR$/madhacks-medicalrecords.iml" />
     </modules>
   </component>

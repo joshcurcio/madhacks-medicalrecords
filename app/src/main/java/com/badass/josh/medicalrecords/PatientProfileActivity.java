@@ -19,7 +19,6 @@ import java.util.List;
 
 public class PatientProfileActivity extends AppCompatActivity {
 
-    String patientName;
 
     int newRecord;
 
@@ -41,12 +40,6 @@ public class PatientProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        Intent hello = getIntent();
-
-        patientID = hello.getLongExtra("patient_id", 0);
-        patientName = hello.getStringExtra("patient_name");
         setContentView(R.layout.activity_patient_profile);
 
         patientNameTV = (TextView) findViewById(R.id.nameTextView);
@@ -54,8 +47,6 @@ public class PatientProfileActivity extends AppCompatActivity {
         patientDOBTV = (TextView) findViewById(R.id.birthDateTextView);
 
         setView();
-        patientNameTV.setText(Singleton.patientName);
-
     }
 
     private void moveToRecordInfo(int i)
@@ -67,7 +58,7 @@ public class PatientProfileActivity extends AppCompatActivity {
             Singleton.isNew = true;
             moveToRecordInfo.putExtra("record_id", recordIDArray.get(i));
             moveToRecordInfo.putExtra("patient_id", Singleton.patientID);
-            moveToRecordInfo.putExtra("patient_name", patientName);
+            moveToRecordInfo.putExtra("patient_name", Singleton.patientName);
             moveToRecordInfo.putExtra("type", recordTypeArray.get(i));
             moveToRecordInfo.putExtra("description", recordDescriptionArray.get(i));
             moveToRecordInfo.putExtra("start_date", recordStartDateArray.get(i));
@@ -137,11 +128,6 @@ public class PatientProfileActivity extends AppCompatActivity {
 
     public void setView()
     {
-
-        setContentView(R.layout.activity_patient_profile);
-
-        System.out.println(Singleton.patientName);
-
         patientNameTV.setText(Singleton.patientName);
         System.out.println(patientNameTV.getText().toString());
         patientDOBTV.setText(Singleton.patientDOB);
@@ -170,7 +156,6 @@ public class PatientProfileActivity extends AppCompatActivity {
                 moveToRecordInfo(i);
             }
         });
-        patientNameTV.setText(Singleton.patientName);
 
     }
 
