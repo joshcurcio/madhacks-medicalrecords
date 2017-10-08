@@ -98,17 +98,7 @@ public class DatabaseInfo
 
     public Cursor returnAllRecords()
     {
-
-        System.out.println(Singleton.patientID);
-        String where = DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + "=" + Singleton.patientID;
-        Log.d("found", "" );
-        Cursor c = actualDatabase.query(true, DATABASE_TABLE_RECORDS, DATABASE_RECORDS_NAMES, null, null, null, null, null, null);
-
-
         Cursor killMeNow = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = " + Integer.parseInt(Long.toString(Singleton.patientID)), null);
-//        Cursor c = actualDatabase.rawQuery("SELECT * FROM " + DATABASE_TABLE_RECORDS + " WHERE " + DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{"" + patient_id});
-//        Cursor c1 = actualDatabase.query(DATABASE_TABLE_RECORDS, null, DATABASE_TABLE_RECORDS_PATIENT_ID_NAME + " = ?", new String[]{patient_id.toString()}, null, null, null);
-//        Cursor c2 = actualDatabase.query(true, DATABASE_TABLE_RECORDS, DATABASE_RECORDS_NAMES, where, null, null, null, null, null);
         return killMeNow;
     }
 

@@ -45,7 +45,7 @@ public class SampleApp extends Application {
     }
 
     public static FacesServiceImpl getFaceServiceClient() {
-        return sFaceServiceClient;
+        return sFaceServiceClient = new FacesServiceImpl("8a3a544e256a468ca2057eda2562cd9a");
     }
 
     private static FacesServiceImpl sFaceServiceClient;
