@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import static com.badass.josh.medicalrecords.MainActivity.maybeDatabase;
+import static com.badass.josh.medicalrecords.Singleton.isNew;
 
 public class RecordDetailsActivity extends AppCompatActivity {
 
@@ -18,6 +19,7 @@ public class RecordDetailsActivity extends AppCompatActivity {
     String startDate;
     String endDate;
     String patientName;
+    int newRecord;
 
     // UI elements
     Button saveChangesButton;
@@ -31,16 +33,6 @@ public class RecordDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent recordInfo = getIntent();
-
-        recordID = recordInfo.getLongExtra("record_id", 0);
-        patientID = recordInfo.getLongExtra("patient_id", 0);
-        recordType = recordInfo.getStringExtra("type");
-        recordDescription = recordInfo.getStringExtra("description");
-        startDate = recordInfo.getStringExtra("start_date");
-        endDate = recordInfo.getStringExtra("end_date");
-        patientName = recordInfo.getStringExtra("patient_name");
-
         // Setting up access to UI elements
         this.saveChangesButton = (Button) this.findViewById(R.id.saveChangesButton);
         this.patientNameEditText = (EditText) this.findViewById(R.id.patientNameEditText);
@@ -50,13 +42,27 @@ public class RecordDetailsActivity extends AppCompatActivity {
         this.descriptionEditText = (EditText) this.findViewById(R.id.descriptionEditText);
 
 
-        patientNameEditText.setText(patientName);
-        eventTypeEditText.setText(recordType);
-        startDateEditText.setText(startDate);
-        endDateEditText.setText(endDate);
-        descriptionEditText.setText(recordDescription);
+        Intent recordInfo = getIntent();
 
-        saveChangesButton.setOnClickListener(new View.OnClickListener() {
+        newRecord = recordInfo.getIntExtra("new_record", 1);
+        if (newRecord == 0) {
+            recordID = recordInfo.getLongExtra("record_id", 0);
+            patientID = recordInfo.getLongExtra("patient_id", 0);
+            recordType = recordInfo.getStringExtra("type");
+            recordDescription = recordInfo.getStringExtra("description");
+            startDate = recordInfo.getStringExtra("start_date");
+            endDate = recordInfo.getStringExtra("end_date");
+            patientName = recordInfo.getStringExtra("patient_name");
+
+            patientNameEditText.setText(patientName);
+            eventTypeEditText.setText(recordType);
+            startDateEditText.setText(startDate);
+            endDateEditText.setText(endDate);
+            descriptionEditText.setText(recordDescription);
+
+        }
+
+        this.saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -65,7 +71,13 @@ public class RecordDetailsActivity extends AppCompatActivity {
                 startDate = startDateEditText.getText().toString();
                 endDate = endDateEditText.getText().toString();
 
-                maybeDatabase.updateRecord(recordID, patientID, recordType, recordDescription, startDate, endDate);
+                if (newRecord == 0) {
+                    maybeDatabase.updateRecord(recordID, patientID, recordType, recordDescription, startDate, endDate);
+                }
+                else
+                {
+                    maybeDatabase.addNewRecord(patientID, recordType, recordDescription, startDate, endDate);
+                }
 
                 finish();
             }

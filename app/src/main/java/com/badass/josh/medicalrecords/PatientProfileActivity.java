@@ -6,8 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,12 +18,16 @@ public class PatientProfileActivity extends AppCompatActivity {
 
     String patientName;
 
-    List<Long> recordIDArray;
+    int newRecord;
+
+    List<Long> recordIDArray = new ArrayList<>();
     Long patientID;
-    List<String> recordTypeArray;
-    List<String> recordDescriptionArray;
-    List<String> recordStartDateArray;
-    List<String> recordEndDateArray;
+    List<String> recordTypeArray = new ArrayList<>();
+    List<String> recordDescriptionArray = new ArrayList<>();
+    List<String> recordStartDateArray = new ArrayList<>();
+    List<String> recordEndDateArray = new ArrayList<>();
+
+    Button addEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,15 @@ public class PatientProfileActivity extends AppCompatActivity {
         patientName = hello.getStringExtra("patient_name");
         getPatientRecords(patientID);
 
+        addEventButton = (Button) findViewById(R.id.newEventButton);
+        addEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                newRecord = 1;
+                moveToRecordInfo(0);
+            }
+        });
 
         ListAdapter patientRecordAdapter = new PatientRecordAdapter(this, recordTypeArray, recordDescriptionArray,
                 recordStartDateArray, recordEndDateArray);
@@ -43,6 +59,7 @@ public class PatientProfileActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
+                newRecord = 0;
                 moveToRecordInfo(i);
             }
         });
@@ -53,21 +70,26 @@ public class PatientProfileActivity extends AppCompatActivity {
     {
         Intent moveToRecordInfo = new Intent(this, RecordDetailsActivity.class);
 
-        moveToRecordInfo.putExtra("record_id", recordIDArray.get(i));
-        moveToRecordInfo.putExtra("patient_id", patientID);
-        moveToRecordInfo.putExtra("patient_name", patientName);
-        moveToRecordInfo.putExtra("type", recordTypeArray.get(i));
-        moveToRecordInfo.putExtra("description", recordDescriptionArray.get(i));
-        moveToRecordInfo.putExtra("start_date", recordStartDateArray.get(i));
-        moveToRecordInfo.putExtra("end_date", recordEndDateArray.get(i));
-
+        moveToRecordInfo.putExtra("new_record", newRecord);
+        if (newRecord == 0) {
+            Singleton.isNew = true;
+            moveToRecordInfo.putExtra("record_id", recordIDArray.get(i));
+            moveToRecordInfo.putExtra("patient_id", patientID);
+            moveToRecordInfo.putExtra("patient_name", patientName);
+            moveToRecordInfo.putExtra("type", recordTypeArray.get(i));
+            moveToRecordInfo.putExtra("description", recordDescriptionArray.get(i));
+            moveToRecordInfo.putExtra("start_date", recordStartDateArray.get(i));
+            moveToRecordInfo.putExtra("end_date", recordEndDateArray.get(i));
+        } else {
+            Singleton.isNew = false;
+        }
         startActivity(moveToRecordInfo);
 
     }
 
     private void getPatientRecords(Long patientIDNum)
     {
-        Cursor c = MainActivity.maybeDatabase.returnAllRecords(patientIDNum);
+        Cursor c = WelcomeScreenActivity.maybeDatabase.returnAllRecords(patientIDNum);
 
         recordIDArray.clear();
         recordTypeArray.clear();

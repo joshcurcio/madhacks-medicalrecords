@@ -79,7 +79,7 @@ public class DatabaseInfo
         return actualDatabase.insert(DATABASE_TABLE_PATIENTS, null, newPatientValues);
     }
 
-    public long addNewRecord(int patientID, String type, String description, String startDate, String endDate)
+    public long addNewRecord(Long patientID, String type, String description, String startDate, String endDate)
     {
         ContentValues newPatientValues = new ContentValues();
         newPatientValues.put(DATABASE_TABLE_RECORDS_PATIENT_ID_NAME, patientID);

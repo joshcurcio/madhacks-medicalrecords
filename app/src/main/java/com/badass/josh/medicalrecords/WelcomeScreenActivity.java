@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -233,6 +234,8 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     {
         maybeDatabase = new DatabaseInfo();
         maybeDatabase.open();
+        actualDatabase.execSQL(DatabaseInfo.DATABASE_CREATE_PATIENTS_TABLE);
+        actualDatabase.execSQL(DatabaseInfo.DATABASE_CREATE_RECORDS_TABLE);
     }
 
     private void closeDB()

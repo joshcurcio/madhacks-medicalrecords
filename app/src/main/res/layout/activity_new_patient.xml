@@ -105,6 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.33"
                     android:ems="10"
+                    android:focusable="false"
                     android:inputType="textPersonName"
                     android:text="07/07/2017"
                     tools:layout_editor_absoluteX="153dp"
