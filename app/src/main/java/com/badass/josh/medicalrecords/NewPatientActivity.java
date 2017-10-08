@@ -1,12 +1,16 @@
 package com.badass.josh.medicalrecords;
 
+import android.app.DatePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
-public class NewPatientActivity extends AppCompatActivity {
+
+public class NewPatientActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener
+{
 
     EditText patientName;
     EditText patientDOB;
@@ -34,6 +38,17 @@ public class NewPatientActivity extends AppCompatActivity {
                 createNewPatient();
             }
         });
+
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, NewPatientActivity.this, 01, 01, 01);
+        patientDOB.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                datePickerDialog.show();
+            }
+        });
+
     }
 
     private void createNewPatient()
@@ -42,8 +57,19 @@ public class NewPatientActivity extends AppCompatActivity {
         patientDOBString = patientDOB.getText().toString().trim();
         patientLocationString = patientLocation.getText().toString().trim();
 
+        if (!patientNameString.isEmpty() && !patientDOBString.isEmpty() && !patientLocationString.isEmpty())
+        {
+            int location = Integer.parseInt(patientLocationString);
+            MainActivity.maybeDatabase.addNewPatient(patientNameString, patientDOBString, location);
+        }
 
     }
 
 
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+        int day = dayOfMonth + 1;
+        patientDOBString = year + "-" + month + "-" + day;
+        patientDOB.setText(patientDOBString);
+    }
 }
