@@ -61,6 +61,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
+                galleryAddPic(photoFile);
             } catch (IOException ex) {
                 // Error occurred while creating the File
 
@@ -76,9 +77,8 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void galleryAddPic() {
+    private void galleryAddPic(File f) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
