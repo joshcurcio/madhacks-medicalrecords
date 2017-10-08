@@ -2,18 +2,23 @@ package com.badass.josh.medicalrecords;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,12 +26,15 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.net.URI;
 
 
@@ -121,13 +129,11 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
             int location = locations.getUserLocation();
             Singleton.patientID = WelcomeScreenActivity.maybeDatabase.addNewPatient(Singleton.patientName, Singleton.patientDOB, location);
-            //TODO add person and train
+
             CSAddPerson addPerson = new CSAddPerson(this);
             addPerson.execute();
 
         }
-
-        goToNewPatientInfo();
 
     }
 
@@ -173,23 +179,27 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
     @Override
     public void onAddPersonCompleted(String personId) {
+        System.out.println("PERSONID: " + personId);
         CSAddPhoto identifyTask = new CSAddPhoto(this);
         identifyTask.execute(personId);
     }
 
     @Override
     public void onAddFaceCompleted(String result) {
-        CSTrainPersonGroup identifyTask = new CSTrainPersonGroup(this);
-        identifyTask.execute(result);
+        System.out.println("FACE ADDED: " + result);
+        if(result.contains("JSONException")){
+            Context context = getApplicationContext();
+            Toast.makeText(context,"Please Retake Photo", Toast.LENGTH_SHORT);
+        } else {
+            CSTrainPersonGroup identifyTask = new CSTrainPersonGroup(this);
+            identifyTask.execute(result);
+        }
+
     }
 
     @Override
     public void onTrainPersonGroupCompleted(String result){
-        if (result.equals("{}")){
-
-        } else {
-
-        }
+            goToNewPatientInfo();
     }
 
     public class CSAddPerson extends AsyncTask<String, Void, String> {
@@ -202,7 +212,6 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
         @Override
         protected String doInBackground(String... strings) {
             String result = "";
-            String personId = strings[0];
             HttpClient httpclient = new DefaultHttpClient();
             try {
                 URIBuilder builder = new URIBuilder(cognitiveServicesBaseUrl + "/persongroups/" + cognitiveServicesPersonGroup + "/persons");
@@ -249,15 +258,16 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
             HttpClient httpclient = new DefaultHttpClient();
             try {
                 URIBuilder builder = new URIBuilder(cognitiveServicesBaseUrl + "/persongroups/" + cognitiveServicesPersonGroup + "/persons/" + personId + "/persistedFaces");
-                builder.setParameter("personGroupId", cognitiveServicesPersonGroup);
-                builder.setParameter("personId", personId);
                 URI uri = builder.build();
                 HttpPost request = new HttpPost(uri);
                 request.setHeader("Content-Type", "application/octet-stream");
                 request.setHeader("Ocp-Apim-Subscription-Key", cognitiveServicesAPIKey);
                 JSONObject jsonRequest = new JSONObject();
-                jsonRequest.put("url", Singleton.mBitmap.getNinePatchChunk());
-                request.setEntity(new StringEntity(jsonRequest.toString()));
+
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                Singleton.mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+
+                request.setEntity(new ByteArrayEntity(output.toByteArray()));
                 HttpResponse response = httpclient.execute(request);
                 HttpEntity entity = response.getEntity();
 
@@ -266,6 +276,7 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
                 }
 
                 JSONObject personData = new JSONObject(result);
+                System.out.println(result);
                 String persistedFaceId = personData.getString("persistedFaceId");
 
                 return persistedFaceId;
@@ -294,7 +305,6 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
             HttpClient httpclient = new DefaultHttpClient();
             try {
                 URIBuilder builder = new URIBuilder(cognitiveServicesBaseUrl + "/persongroups/" + cognitiveServicesPersonGroup + "/train");
-                builder.setParameter("personGroupId", cognitiveServicesPersonGroup);
                 URI uri = builder.build();
                 HttpPost request = new HttpPost(uri);
                 request.setHeader("Ocp-Apim-Subscription-Key", cognitiveServicesAPIKey);

@@ -169,6 +169,8 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
         //mText.append("\npersonId: " + personId);
         if (personId == ""){
             //mText.append("\nUnidentified Person");
+            Intent newPatientIntent = new Intent(this, NewPatientActivity.class);
+            startActivity(newPatientIntent);
             return;
         }
         CSFaceGetPersonTask getPersonTask = new CSFaceGetPersonTask(this);
