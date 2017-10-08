@@ -66,9 +66,6 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         this.dispatchTakePictureIntent();
     }
 
-
-
-
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -102,6 +99,8 @@ public class WelcomeScreenActivity extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 mImageUri = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
                         photoFile);
@@ -116,8 +115,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                 // Start a background task to detect faces in the image.
                 new DetectionTask().execute(inputStream);
 
-                /*takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);*/
+
             }
         }
     }
@@ -129,15 +127,6 @@ public class WelcomeScreenActivity extends AppCompatActivity {
         this.sendBroadcast(mediaScanIntent);
     }
 
-    private void detect (){
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(output.toByteArray());
-
-        // Start a background task to detect faces in the image.
-        new DetectionTask().execute(inputStream);
-
-    }
 
     // Background task of face detection.
     private class DetectionTask extends AsyncTask<InputStream, String, Face[]> {
