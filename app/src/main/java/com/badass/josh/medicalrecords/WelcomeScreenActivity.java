@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.provider.MediaStore;
 import android.graphics.Bitmap;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -66,6 +68,9 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
         bigDatabase = DatabaseHelper.getInstance(this);
 
         openDB();
+        TextView userName = (TextView) findViewById(R.id.textView2);
+        userName.setText(Singleton.userEmail);
+
     }
 
 

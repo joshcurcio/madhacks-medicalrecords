@@ -219,6 +219,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         int i = v.getId();
+        Singleton.userEmail = mEmailField.getText().toString();
         if (i == R.id.email_sign_up_button) {
             createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
         } else if (i == R.id.email_sign_in_button) {
