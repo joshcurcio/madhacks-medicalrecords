@@ -34,6 +34,8 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
         newPatientButton = (Button) findViewById(R.id.addNewPatientButton);
 
+        patientDOB.setText("2000-01-01");
+
         newPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,7 +43,7 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
             }
         });
 
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, NewPatientActivity.this, 01, 01, 01);
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, NewPatientActivity.this, 2000, 0, 0);
         patientDOB.setOnClickListener(new View.OnClickListener()
         {
             @Override
