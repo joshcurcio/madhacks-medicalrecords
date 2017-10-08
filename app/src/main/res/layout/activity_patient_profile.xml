@@ -81,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".14"
-                    android:text="John Smith"
+                    android:text="this"
                     android:textAlignment="center"
                     android:textSize="18sp"
                     android:textStyle="bold"

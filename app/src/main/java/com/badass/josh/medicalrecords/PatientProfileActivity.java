@@ -9,6 +9,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,9 @@ public class PatientProfileActivity extends AppCompatActivity {
     List<String> recordStartDateArray = new ArrayList<>();
     List<String> recordEndDateArray = new ArrayList<>();
 
+    TextView patientNameTV;
+    TextView patientDOBTV;
+    TextView patientLocationTV;
     Button addEventButton;
 
     ListAdapter patientRecordAdapter;
@@ -43,7 +49,13 @@ public class PatientProfileActivity extends AppCompatActivity {
         patientName = hello.getStringExtra("patient_name");
         setContentView(R.layout.activity_patient_profile);
 
+        patientNameTV = (TextView) findViewById(R.id.nameTextView);
+        patientLocationTV = (TextView) findViewById(R.id.locationTextView);
+        patientDOBTV = (TextView) findViewById(R.id.birthDateTextView);
+
         setView();
+        patientNameTV.setText(Singleton.patientName);
+
     }
 
     private void moveToRecordInfo(int i)
@@ -117,6 +129,8 @@ public class PatientProfileActivity extends AppCompatActivity {
             }
         });*/
         setView();
+        patientNameTV.setText(Singleton.patientName);
+
 
     }
 
@@ -126,6 +140,12 @@ public class PatientProfileActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_patient_profile);
 
+        System.out.println(Singleton.patientName);
+
+        patientNameTV.setText(Singleton.patientName);
+        System.out.println(patientNameTV.getText().toString());
+        patientDOBTV.setText(Singleton.patientDOB);
+        patientLocationTV.setText(Singleton.patientLocation);
 
         getPatientRecords();
         addEventButton = (Button) findViewById(R.id.newEventButton);
@@ -150,6 +170,7 @@ public class PatientProfileActivity extends AppCompatActivity {
                 moveToRecordInfo(i);
             }
         });
+        patientNameTV.setText(Singleton.patientName);
 
     }
 

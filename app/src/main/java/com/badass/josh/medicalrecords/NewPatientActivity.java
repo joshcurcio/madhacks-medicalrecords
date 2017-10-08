@@ -61,6 +61,10 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
         patientNameString = patientName.getText().toString().trim();
         patientDOBString = patientDOB.getText().toString().trim();
         patientLocationString = patientLocation.getText().toString().trim();
+        Singleton.patientName = patientNameString;
+        Singleton.patientDOB = patientDOBString;
+        Singleton.patientLocation = patientLocationString;
+
 
         if (!patientNameString.isEmpty() && !patientDOBString.isEmpty() && !patientLocationString.isEmpty())
         {
