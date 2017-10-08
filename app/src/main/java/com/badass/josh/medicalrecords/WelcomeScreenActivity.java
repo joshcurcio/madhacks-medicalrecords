@@ -22,7 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import com.badass.josh.medicalrecords.helper.ImageHelper;
 import com.badass.josh.medicalrecords.helper.SampleApp;
@@ -35,6 +38,7 @@ import com.microsoft.projectoxford.face.contract.Accessory;
 import com.microsoft.projectoxford.face.contract.Blur;
 import com.microsoft.projectoxford.face.contract.Exposure;
 import com.microsoft.projectoxford.face.contract.Hair;
+import com.microsoft.projectoxford.face.contract.IdentifyResult;
 import com.microsoft.projectoxford.face.contract.Makeup;
 import com.microsoft.projectoxford.face.contract.Noise;
 import com.microsoft.projectoxford.face.contract.Occlusion;
@@ -169,7 +173,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                 System.out.println("MADE IT 3");
 
                 // Start detection.
-                return faceServiceClient.detect(
+                Face[] faces =  faceServiceClient.detect(
                         params[0],  /* Input stream of image to detect */
                         true,       /* Whether to return face ID */
                         true,       /* Whether to return face landmarks */
@@ -191,6 +195,8 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                                 FacesServiceImpl.FaceAttributeType.Noise,
                                 FacesServiceImpl.FaceAttributeType.Occlusion
                         });
+                return faces;
+
             } catch (Exception e) {
                 mSucceed = false;
                 publishProgress(e.getMessage());
@@ -217,7 +223,21 @@ public class WelcomeScreenActivity extends AppCompatActivity {
                 System.out.println("ERROR " + "Response: Success. Detected " + (result == null ? 0 : result.length)
                         + " face(s) in " + mImageUri);
             }
+            if (result != null){
+                UUID[] faceIds = new UUID[result.length];
+                int i = 0;
+                for (Face face:  result) {
+                    faceIds[i] = face.faceId;
+                    i++;
+                }
+                FacesServiceImpl faceServiceClient = SampleApp.getFaceServiceClient();
+                try {
+                    IdentifyResult[] ir = faceServiceClient.identity("Mad Hacks", faceIds, .75f, 1);
+                    System.out.println(ir.toString());
+                } catch (Exception ex){
 
+                }
+            }
             // Show the result on screen when detection is done.
             System.out.println("SUCCESS " + result);
         }
