@@ -109,7 +109,9 @@ public class DatabaseInfo
         {
             Singleton.patientName = patientInfoCursor.getString(DATABASE_TABLE_PATIENTS_NAME_NUM);
             Singleton.patientDOB = patientInfoCursor.getString(DatabaseInfo.DATABASE_TABLE_PATIENTS_DOB_NUM);
-            Singleton.patientLocation = patientInfoCursor.getString(DatabaseInfo.DATABASE_TABLE_PATIENTS_LOCATION_NUM);
+
+            String userLoc = Singleton.stringLocations[Integer.parseInt(patientInfoCursor.getString(DatabaseInfo.DATABASE_TABLE_PATIENTS_LOCATION_NUM))];
+            Singleton.patientLocation = userLoc;
             return true;
         }
         else

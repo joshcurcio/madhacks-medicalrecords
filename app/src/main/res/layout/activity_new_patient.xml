@@ -111,7 +111,7 @@
                     tools:layout_editor_absoluteX="153dp"
                     tools:layout_editor_absoluteY="55dp" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/locationEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

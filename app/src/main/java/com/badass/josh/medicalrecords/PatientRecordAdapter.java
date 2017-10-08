@@ -50,8 +50,13 @@ public class PatientRecordAdapter extends ArrayAdapter<String>
         TextView recordStartDateTV = (TextView) recordListView.findViewById(R.id.patientRecordStartDate);
         TextView recordEndDateTV = (TextView) recordListView.findViewById(R.id.patientRecordEndDate);
 
+
         recordTypeTV.setText(patientRecordTypeString);
-        recordDescriptionTV.setText(patientRecordDescriptionString.substring(0, 15));
+        if(patientRecordDescriptionString.length() > 15) {
+            recordDescriptionTV.setText(patientRecordDescriptionString.substring(0, 15));
+        } else{
+            recordDescriptionTV.setText(patientRecordDescriptionString);
+        }
         recordStartDateTV.setText(patientRecordStartDateString);
         recordEndDateTV.setText(patientRecordEndDateString);
 

@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -31,11 +33,20 @@ public class NewPatientActivity extends AppCompatActivity implements DatePickerD
 
         patientName = (EditText) findViewById(R.id.patientNameEditText);
         patientDOB = (EditText) findViewById(R.id.dateOfBirthEditText);
-        patientLocation = (EditText) findViewById(R.id.locationEditText);
+        // patientLocation = (EditText) findViewById(R.id.locationEditText);
 
         newPatientButton = (Button) findViewById(R.id.addNewPatientButton);
 
         patientDOB.setText("2000-01-01");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice, Singleton.stringLocations);
+        //Find TextView control
+        AutoCompleteTextView acTextView = (AutoCompleteTextView) findViewById(R.id.locationEditText);
+        //Set the number of characters the user must type before the drop down list is shown
+        acTextView.setThreshold(0);
+        //Set the adapter
+        acTextView.setAdapter(adapter);
+
 
         newPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
