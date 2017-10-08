@@ -153,10 +153,10 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
     @Override
     public void onDetectCompleted(String result) {
         if (result == "failed") {
-            //mText.setText("No Face Detected");
+            Intent newPatientIntent = new Intent(this, NewPatientActivity.class);
+            startActivity(newPatientIntent);
             return;
         }
-        //mText.append("\nFace Detected...\nIdentifying...");
         try
         {
             JSONArray faceArray = new JSONArray(result);
@@ -184,7 +184,9 @@ public class WelcomeScreenActivity extends Activity implements OnCSTaskCompleted
 
     @Override
     public void onGetPersonCompleted(String personName) {
-        System.out.println(personName);
+        WelcomeScreenActivity.maybeDatabase.getPatientInfo(Integer.parseInt(personName));
+        Intent patientInfoIntent = new Intent(this, PatientProfileActivity.class);
+        startActivity(patientInfoIntent);
     }
 
     public class CSFaceGetPersonTask extends AsyncTask<String, Void, String> {
